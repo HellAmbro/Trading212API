@@ -12,6 +12,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
+
 class Mode(Enum):
     DEMO = 0,
     LIVE = 1
@@ -21,10 +22,10 @@ class UnknownModeException(Exception):
     pass
 
 
-FILE_COOKIES = "cookies.json"
-USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36"
-TRADING212_SESSION_LIVE = "TRADING212_SESSION_LIVE"
-TRADING212_SESSION_DEMO = "TRADING212_SESSION_DEMO"
+_FILE_COOKIES = "cookies.json"
+_USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36"
+_TRADING212_SESSION_LIVE = "TRADING212_SESSION_LIVE"
+_TRADING212_SESSION_DEMO = "TRADING212_SESSION_DEMO"
 
 
 class Trading212:
@@ -32,10 +33,10 @@ class Trading212:
     def __init__(self, username, password, mode=Mode.DEMO, save_cookies=True):
         self._cookies = ""
         if mode == Mode.DEMO:
-            self._session = TRADING212_SESSION_DEMO
+            self._session = _TRADING212_SESSION_DEMO
             self._base_url = 'https://demo.trading212.com'
         elif mode == Mode.REAL:
-            self._session = TRADING212_SESSION_LIVE
+            self._session = _TRADING212_SESSION_LIVE
             self._base_url = 'https://live.trading212.com'
         else:
             raise UnknownModeException(f"{mode} is not valid")
@@ -43,7 +44,7 @@ class Trading212:
         # necessary headers for requests
         self._headers = {'Accept': 'application/json',
                          'Content-Type': 'application/json',
-                         'User-Agent': USER_AGENT}
+                         'User-Agent': _USER_AGENT}
 
         # check if cookies are saved and if they are still valid, in this case login isn't needed
         if save_cookies:
@@ -82,7 +83,7 @@ class Trading212:
         self._headers['Cookie'] = self._cookies
 
     def _save_cookies_to_file(self):
-        file_cookies = open(FILE_COOKIES, 'w+')
+        file_cookies = open(_FILE_COOKIES, 'w+')
         cookies_to_save = {}
         for cookie in self._driver.get_cookies():
             if cookie['name'] == self._session:
@@ -100,8 +101,8 @@ class Trading212:
         requests.post('https://demo.trading212.com/rest/v2/account/switch', headers=headers)
 
     def _get_cookies_from_file(self):
-        if os.path.exists(FILE_COOKIES):
-            file_cookies = open(FILE_COOKIES, "r")
+        if os.path.exists(_FILE_COOKIES):
+            file_cookies = open(_FILE_COOKIES, "r")
             cookie = f"{self._session}={json.load(file_cookies)[self._session]['value']};"
             file_cookies.close()
             return cookie
@@ -110,7 +111,7 @@ class Trading212:
         """Check if cookies are still valid"""
         # file can be corrupted (empty or with wrong json format), catch exception and return false
         try:
-            file_cookies = open(FILE_COOKIES, 'r')
+            file_cookies = open(_FILE_COOKIES, 'r')
             saved_cookies = json.load(file_cookies)
             headers = self._headers
             if saved_cookies[self._session]['value']:
