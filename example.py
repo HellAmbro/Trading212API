@@ -1,4 +1,5 @@
-from Trading212API import Trading212
+from Trading212API import Trading212, Mode, \
+    MarketOrder, TimeValidity, LimitOrder, StopOrder, StopLimitOrder
 
 trading212 = Trading212('your_email', 'password', mode=Mode.DEMO, save_cookies=True)
 
