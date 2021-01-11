@@ -123,23 +123,23 @@ class Trading212:
 
     def last_hour_hotlist(self):
         response = requests.get(f'{self._base_url}/trading212.com/rest/positions-tracker/deltas/hourly/1')
-        return response.content.decode('utf-8')
+        return json.loads(response.content.decode('utf-8'))
 
     def get_funds(self):
         response = requests.get(f'{self._base_url}/rest/customer/accounts/funds', headers=self._headers)
-        return response.content.decode('utf-8')
+        return json.loads(response.content.decode('utf-8'))
 
     def get_orders(self):
         response = requests.get(f"{self._base_url}/rest/history/orders", headers=self._headers)
-        return response.content.decode('utf-8')
+        return json.loads(response.content.decode('utf-8'))
 
     def execute_order(self, order):
         response = requests.post(url=f"{self._base_url}/rest/public/v2/equity/order",
                                  headers=self._headers,
                                  data=order.to_json())
-        return response.content.decode('utf-8')
+        return json.loads(response.content.decode('utf-8'))
 
     def cancel_order(self, order_id):
         response = requests.delete(url=f"{self._base_url}/rest/public/v2/equity/order/{order_id}",
                                    headers=self._headers)
-        return response.content.decode('utf-8')
+        return json.loads(response.content.decode('utf-8'))
