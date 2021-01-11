@@ -1,6 +1,8 @@
 # Trading212 API
 **Unofficial** API for Trading212 broker. 
-### <span style="color:red">CFD are not suppoerted yet. Investing only</span>
+### CFD are not suppoerted yet. Investing only.
+## Disclaimer
+#### Nor me or Trading212 are responsible for the use of this API, first make sure that everything works well through the use of a **DEMO** account, then switch to **REAL** mode.
 ### Prerequisites
 chromedriver in your PATH,
 ##### Download the latest stable release of chromedriver from https://chromedriver.chromium.org/, extract and move it to /usr/local/bin
