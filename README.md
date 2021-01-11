@@ -1,6 +1,10 @@
 # Trading212 API
 **Unofficial** API for Trading212 broker. 
 ### <span style="color:red">CFD are not suppoerted yet. Investing only</span>
+### Prerequisites
+chromedriver in your PATH,
+##### Download the latest stable release of chromedriver from https://chromedriver.chromium.org/, extract and move it to /usr/local/bin
+
 ### Install
 ````
 pip install pytrading212
@@ -8,6 +12,7 @@ pip install pytrading212
 ### Usage
 #### save_cookies=True
 after logging in, the session cookie will be saved, if the cookie is still valid you will not be logged in
+
 ````
 trading212 = Trading212('your_email', 'password', mode=Mode.DEMO, save_cookies=True)
 
