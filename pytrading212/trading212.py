@@ -4,13 +4,17 @@
 
 import json
 import os
+import time
 from enum import Enum
 
 import requests
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
+
+from pytrading212.position import Position
 
 
 class Mode(Enum):
@@ -22,104 +26,81 @@ class UnknownModeException(Exception):
     pass
 
 
-_FILE_COOKIES = "cookies.json"
-_USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36"
-_TRADING212_SESSION_LIVE = "TRADING212_SESSION_LIVE"
-_TRADING212_SESSION_DEMO = "TRADING212_SESSION_DEMO"
+FILE_COOKIES = "cookies.json"
+
+
+class Period(Enum):
+    LAST_DAY = 0,
+    LAST_WEEK = 1,
+    LAST_MONTH = 2,
+    LAST_THREE_MONTHS = 3,
+    LAST_YER = 4,
+    ALL = 5,
 
 
 class Trading212:
 
-    def __init__(self, username, password, mode=Mode.DEMO, save_cookies=True):
-        self._cookies = ""
+    def __init__(self, username, password, mode=Mode.DEMO, headless=True):
         if mode == Mode.DEMO:
-            self._session = _TRADING212_SESSION_DEMO
+            self._session = "TRADING212_SESSION_DEMO"
             self._base_url = 'https://demo.trading212.com'
         elif mode == Mode.REAL:
-            self._session = _TRADING212_SESSION_LIVE
+            self._session = "TRADING212_SESSION_LIVE"
             self._base_url = 'https://live.trading212.com'
         else:
             raise UnknownModeException(f"{mode} is not valid")
 
+        options = Options()
+        if headless:
+            options.add_argument('--headless')
+            options.add_argument('--disable-gpu')
+        self._driver = webdriver.Chrome(chrome_options=options)
+
+        self._driver.get('https://www.trading212.com/it/login')
+
+        # authenticate
+        self._driver.find_element_by_name("login[username]").send_keys(username)
+        self._driver.find_element_by_name("login[password]").send_keys(password)
+        self._driver.find_element_by_class_name("button-login").click()
+
+        # wait until the site is fully loaded
+        condition = expected_conditions.visibility_of_element_located((By.CLASS_NAME, 'company-logo'))
+        # 120 seconds is a lot, but the site sometimes is very slow
+        WebDriverWait(self._driver, 120).until(condition)
+
+        # todo support CFD
+        # for now only invest is supported, so switch to investing to get cookies
+        try:
+            account_info = self._driver.find_element_by_class_name('account-menu-info')
+            if "CFD" in account_info.text:
+                self._switch_to_invest()
+        except:
+            pass
+
+        # redirect to correct mode, DEMO or LIVE
+        if self._base_url not in self._driver.current_url:
+            self._driver.get(self._base_url)
+
+        for cookie in self._driver.get_cookies():
+            if cookie['name'] == self._session:
+                self._cookie = f"{self._session}={cookie['value']};"
+
         # necessary headers for requests
         self._headers = {'Accept': 'application/json',
                          'Content-Type': 'application/json',
-                         'User-Agent': _USER_AGENT}
+                         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                                       'Chrome/87.0.4280.141 Safari/537.36 ',
+                         'Cookie': self._cookie}
 
-        # check if cookies are saved and if they are still valid, in this case login isn't needed
-        if save_cookies:
-            self._cookies = self._get_cookies_from_file()
+    def finish(self):
+        self._driver.close()
 
-        if not self._are_cookies_valid():
-            self._driver = webdriver.Chrome()
-            self._driver.get('https://www.trading212.com/it/login')
-            # authenticate
-            self._driver.find_element_by_name("login[username]").send_keys(username)
-            self._driver.find_element_by_name("login[password]").send_keys(password)
-            self._driver.find_element_by_class_name("button-login").click()
-
-            # wait until the site is fully loaded
-            condition = expected_conditions.visibility_of_element_located((By.CLASS_NAME, 'company-logo'))
-            # 120seconds is a lot, but the site sometimes is very slow
-            WebDriverWait(self._driver, 120).until(condition)
-
-            # todo support CFD
-            # for now only invest is supported, so switch to investing to get cookies
-            try:
-                account_info = self._driver.find_element_by_class_name('account-menu-info')
-                if "CFD" in account_info.text:
-                    self._switch_to_invest()
-            except:
-                pass
-
-            # redirect to correct mode, DEMO or LIVE
-            if self._base_url not in self._driver.current_url:
-                self._driver.get(self._base_url)
-
-            if save_cookies:
-                self._save_cookies_to_file()
-                self._cookies = self._get_cookies_from_file()
-            self._driver.close()
-        self._headers['Cookie'] = self._cookies
-
-    def _save_cookies_to_file(self):
-        file_cookies = open(_FILE_COOKIES, 'w+')
-        cookies_to_save = {}
-        for cookie in self._driver.get_cookies():
-            if cookie['name'] == self._session:
-                cookies_to_save[self._session] = cookie
-                file_cookies.write(json.dumps(cookies_to_save))
-                file_cookies.close()
-                break
-
-    # switch from CFD to Invest
     def _switch_to_invest(self):
         headers = {'Accept': 'application/json',
                    'Content-Type': 'application/json',
                    'User-Agent': 'Chrome/86.0.4240.75 Safari/537.36',
                    'Cookie': f"{self._driver.get_cookies()}"}
         requests.post('https://demo.trading212.com/rest/v2/account/switch', headers=headers)
-
-    def _get_cookies_from_file(self):
-        if os.path.exists(_FILE_COOKIES):
-            file_cookies = open(_FILE_COOKIES, "r")
-            cookie = f"{self._session}={json.load(file_cookies)[self._session]['value']};"
-            file_cookies.close()
-            return cookie
-
-    def _are_cookies_valid(self):
-        """Check if cookies are still valid"""
-        # file can be corrupted (empty or with wrong json format), catch exception and return false
-        try:
-            file_cookies = open(_FILE_COOKIES, 'r')
-            saved_cookies = json.load(file_cookies)
-            headers = self._headers
-            if saved_cookies[self._session]['value']:
-                headers['Cookie'] = f"{self._session}={saved_cookies[self._session]['value']};"
-            file_cookies.close()
-            return requests.get(f'{self._base_url}/rest/customer/accounts/funds', headers=headers).status_code == 200
-        except:
-            return False
 
     def last_hour_hotlist(self):
         response = requests.get(f'{self._base_url}/trading212.com/rest/positions-tracker/deltas/hourly/1')
@@ -143,3 +124,24 @@ class Trading212:
         response = requests.delete(url=f"{self._base_url}/rest/public/v2/equity/order/{order_id}",
                                    headers=self._headers)
         return json.loads(response.content.decode('utf-8'))
+
+    def get_portfolio_performance(self, time_period=Period.LAST_DAY):
+        response = requests.get(url=f"{self._base_url}/rest/v2/portfolio?period={time_period.name}",
+                                headers=self._headers)
+        return json.loads(response.content.decode('utf-8'))
+
+    def get_portfolio_composition(self):
+        # click on investments
+        self._driver.find_element_by_xpath(
+            '//*[@id="app"]/div[1]/div[2]/div[2]/div[1]/div/div[1]/div/div[2]/div[1]/div[2]/div[1]/div').click()
+        positions = []
+        elements = self._driver.find_elements_by_class_name('investment-item')
+        for el in elements:
+            logo_url = el.find_element_by_class_name('instrument-logo-image').get_attribute('src')
+            ticker = el.get_attribute('data-qa-item')
+            value = el.find_element_by_class_name('total-value').text
+            quantity = el.find_element_by_class_name('quantity').text
+            total_return = el.find_element_by_class_name('return').text
+            position = Position(logo_url, ticker, value, quantity, total_return)
+            positions.append(position.__dict__)
+        return positions

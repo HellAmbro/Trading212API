@@ -12,11 +12,14 @@ chromedriver in your PATH,
 pip install pytrading212
 ````
 ### Usage
-#### save_cookies=True
-after logging in, the session cookie will be saved, if the cookie is still valid you will not be logged in
 
 ````
-trading212 = Trading212('your_email', 'password', mode=Mode.DEMO, save_cookies=True)
+from pytrading212.order import TimeValidity, StopLimitOrder, StopOrder, LimitOrder
+
+from pytrading212 import Trading212, Mode, MarketOrder
+from pytrading212.trading212 import Period
+
+trading212 = Trading212('your_email', 'password', mode=Mode.DEMO)
 
 market_order = trading212.execute_order(MarketOrder(instrument_code="AMZN_US_EQ", quantity=2))
 
@@ -30,11 +33,59 @@ stop_limit = trading212.execute_order(
     StopLimitOrder(instrument_code="AMZN_US_EQ", quantity=2, limit_price=3000, stop_price=4000,
                    time_validity=TimeValidity.GOOD_TILL_CANCEL))
 
-trading212.get_funds()
-trading212.get_orders()
-trading212.cancel_order(14238041)
+funds = trading212.get_funds()
+orders = trading212.get_orders()
+
+portfolio = trading212.get_portfolio_composition()
+performance = trading212.get_portfolio_performance(Period.LAST_DAY)
+
+trading212.finish()
+
+# finish your session
+trading.finish()
 ````
 
+### Portfolio
+````
+portfolio = trading212.get_portfolio_composition()
+[
+  {
+    'logo_url': 'https://trading212equities.s3.eu-central-1.amazonaws.com/BABA_US_EQ.png',
+    'instrument_code': 'BABA_US_EQ',
+    'value': '€9.28',
+    'quantity': '0.0479677 shares',
+    'total_return': '€0.28 (3.11%)'
+  },
+  {
+    'logo_url': 'https://trading212equities.s3.eu-central-1.amazonaws.com/AMZN_US_EQ.png',
+    'instrument_code': 'AMZN_US_EQ',
+    'value': '€15,625.60',
+    'quantity': '6.00353784 shares',
+    'total_return': '€75.57 (0.49%)'
+  },
+]
+````
+### Performance
+````
+trading212.get_portfolio_performance(Period.LAST_DAY)
+{
+  'snapshots': [
+    {
+      'investment': 16438.3,
+      'ppl': -159.81,
+      'result': -17.92,
+      'pieCash': 0.05,
+      'time': '2021-01-13T11:00:00Z'
+    },
+    {
+      'investment': 16438.3,
+      'ppl': -158.06,
+      'result': -17.92,
+      'pieCash': 0.05,
+      'time': '2021-01-13T11:15:00Z'
+    },
+    -- snip --
+````
 ### How can I get instrument code?
 Search the stock, open dev-tools of your browser, network, look for a request called 'batch', request payload, ticker, [Example](https://imgur.com/a/7ZZCjku)
 #### instrument_code will be mapped in further release of this API, so you can buy Amazon simply writing AMZN or Amazon for example.
