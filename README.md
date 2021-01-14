@@ -48,6 +48,8 @@ trading.finish()
 ### Portfolio
 ````
 portfolio = trading212.get_portfolio_composition()
+````
+````
 [
   {
     'logo_url': 'https://trading212equities.s3.eu-central-1.amazonaws.com/BABA_US_EQ.png',
@@ -68,6 +70,8 @@ portfolio = trading212.get_portfolio_composition()
 ### Performance
 ````
 trading212.get_portfolio_performance(Period.LAST_DAY)
+````
+````
 {
   'snapshots': [
     {
