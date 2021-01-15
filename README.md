@@ -93,5 +93,3 @@ trading212.get_portfolio_performance(Period.LAST_DAY)
 ### How can I get instrument code?
 Search the stock, open dev-tools of your browser, network, look for a request called 'batch', request payload, ticker, [Example](https://imgur.com/a/7ZZCjku)
 #### instrument_code will be mapped in further release of this API, so you can buy Amazon simply writing AMZN or Amazon for example.
-
-### I wrote this API during a trip, I prioritized functionality, there is still a lot to work on the code to make it more elegant and readable. Also this is one of the first projects I do using python so don't be too mean. Any requests, help, advice, suggestions are welcome. HellAmbro.  </span>
