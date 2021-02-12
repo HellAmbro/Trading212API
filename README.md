@@ -91,5 +91,7 @@ trading212.get_portfolio_performance(Period.LAST_DAY)
     -- snip --
 ````
 ### How can I get instrument code?
-Search the stock, open dev-tools of your browser, network, look for a request called 'batch', request payload, ticker, [Example](https://imgur.com/a/7ZZCjku)
-#### instrument_code will be mapped in further release of this API, so you can buy Amazon simply writing AMZN or Amazon for example.
+Lookup in companies.json, key "ticker"
+
+### Support this project
+<a href="https://www.buymeacoffee.com/hellambro" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" height="50" ></a>
