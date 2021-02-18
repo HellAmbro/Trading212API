@@ -3,8 +3,6 @@
 # Author: Francesco Ambrosini
 
 import json
-import os
-import time
 from enum import Enum
 
 import requests
@@ -24,9 +22,6 @@ class Mode(Enum):
 
 class UnknownModeException(Exception):
     pass
-
-
-FILE_COOKIES = "cookies.json"
 
 
 class Period(Enum):
@@ -145,3 +140,18 @@ class Trading212:
             position = Position(logo_url, ticker, value, quantity, total_return)
             positions.append(position.__dict__)
         return positions
+
+    def get_companies(self):
+        response = requests.get(url=f"{self._base_url}/rest/companies")
+        return json.loads(response.content.decode('utf-8'))
+
+    # todo implement this function, replace variables naming
+    def search(self, query):
+        """
+        What it should do: search for tickers in the companies.json file, you will get a list of tickers,
+        for example AMZ -> AMZN, AMZN_US_EQ,..., and so on that will be passed in the post call"""
+        list = ["AMZN_US_EQ", ]  # dummy ticker
+        response = requests.post(f"{self._base_url}/charting/prices?withFakes=false", headers=self._headers,
+                                 data=list.__str__().replace('\'',
+                                                             '\"'))  # replace ' with " for Trading212 compatibility
+        return json.loads(response.content.decode('utf-8'))

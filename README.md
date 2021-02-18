@@ -1,7 +1,10 @@
 # Trading212 API
 **Unofficial** API for Trading212 broker. 
 ### CFD are not suppoerted yet. Investing only.
-## Disclaimer
+### Support this project
+<a href="https://www.buymeacoffee.com/hellambro" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" height="50" ></a>
+
+### Disclaimer
 #### Nor me or Trading212 are responsible for the use of this API, first make sure that everything works well through the use of a **DEMO** account, then switch to **REAL** mode.
 ### Prerequisites
 chromedriver in your PATH,
@@ -93,5 +96,3 @@ trading212.get_portfolio_performance(Period.LAST_DAY)
 ### How can I get instrument code?
 Lookup in companies.json, key "ticker"
 
-### Support this project
-<a href="https://www.buymeacoffee.com/hellambro" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" height="50" ></a>
