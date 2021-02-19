@@ -12,16 +12,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
+from pytrading212.order import ValueOrder
 from pytrading212.position import Position
 
 
 class Mode(Enum):
     DEMO = 0,
     LIVE = 1
-
-
-class UnknownModeException(Exception):
-    pass
 
 
 class Period(Enum):
@@ -31,6 +28,10 @@ class Period(Enum):
     LAST_THREE_MONTHS = 3,
     LAST_YER = 4,
     ALL = 5,
+
+
+class UnknownModeException(Exception):
+    pass
 
 
 class Trading212:
@@ -115,6 +116,12 @@ class Trading212:
                                  data=order.to_json())
         return json.loads(response.content.decode('utf-8'))
 
+    def execute_value_order(self, order: ValueOrder):
+        response = requests.post(url=f"{self._base_url}/rest/v1/equity/value-order",
+                                 headers=self._headers,
+                                 data=order.to_json())
+        return json.loads(response.content.decode('utf-8'))
+
     def cancel_order(self, order_id):
         response = requests.delete(url=f"{self._base_url}/rest/public/v2/equity/order/{order_id}",
                                    headers=self._headers)
@@ -126,6 +133,8 @@ class Trading212:
         return json.loads(response.content.decode('utf-8'))
 
     def get_portfolio_composition(self):
+        # click portfolio section on right-sidepanel
+        self._driver.find_element_by_xpath('//*[@id="app"]/div[1]/div[2]/div[1]/div[1]/div[2]/div').click()
         # click on investments
         self._driver.find_element_by_xpath(
             '//*[@id="app"]/div[1]/div[2]/div[2]/div[1]/div/div[1]/div/div[2]/div[1]/div[2]/div[1]/div').click()
@@ -137,7 +146,7 @@ class Trading212:
             value = el.find_element_by_class_name('total-value').text
             quantity = el.find_element_by_class_name('quantity').text
             total_return = el.find_element_by_class_name('return').text
-            position = Position(logo_url, ticker, value, quantity, total_return)
+            position = Position(ticker, value, quantity, total_return)
             positions.append(position.__dict__)
         return positions
 
