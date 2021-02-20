@@ -26,8 +26,6 @@ class Period(Enum):
     LAST_WEEK = 1,
     LAST_MONTH = 2,
     LAST_THREE_MONTHS = 3,
-    LAST_YER = 4,
-    ALL = 5,
 
 
 class UnknownModeException(Exception):
