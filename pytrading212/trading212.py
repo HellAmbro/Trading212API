@@ -26,7 +26,7 @@ class Period(Enum):
     LAST_WEEK = 1,
     LAST_MONTH = 2,
     LAST_THREE_MONTHS = 3,
-    LAST_YER = 4,
+    LAST_YEAR = 4,
     ALL = 5,
 
 
@@ -40,7 +40,7 @@ class Trading212:
         if mode == Mode.DEMO:
             self._session = "TRADING212_SESSION_DEMO"
             self._base_url = 'https://demo.trading212.com'
-        elif mode == Mode.REAL:
+        elif mode == Mode.LIVE:
             self._session = "TRADING212_SESSION_LIVE"
             self._base_url = 'https://live.trading212.com'
         else:
@@ -50,10 +50,11 @@ class Trading212:
         if headless:
             options.add_argument('--headless')
             options.add_argument('--disable-gpu')
+
         self._driver = webdriver.Chrome(chrome_options=options)
 
         self._driver.get('https://www.trading212.com/it/login')
-
+        self._user_agent = self._driver.execute_script("return navigator.userAgent;")
         # authenticate
         self._driver.find_element_by_name("login[username]").send_keys(username)
         self._driver.find_element_by_name("login[password]").send_keys(password)
@@ -84,8 +85,7 @@ class Trading212:
         # necessary headers for requests
         self._headers = {'Accept': 'application/json',
                          'Content-Type': 'application/json',
-                         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                                       'Chrome/87.0.4280.141 Safari/537.36 ',
+                         'User-Agent': self._user_agent,
                          'Cookie': self._cookie}
 
     def finish(self):
@@ -94,7 +94,7 @@ class Trading212:
     def _switch_to_invest(self):
         headers = {'Accept': 'application/json',
                    'Content-Type': 'application/json',
-                   'User-Agent': 'Chrome/86.0.4240.75 Safari/537.36',
+                   'User-Agent': self._user_agent,
                    'Cookie': f"{self._driver.get_cookies()}"}
         requests.post('https://demo.trading212.com/rest/v2/account/switch', headers=headers)
 

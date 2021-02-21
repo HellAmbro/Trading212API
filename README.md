@@ -16,6 +16,7 @@ pip install pytrading212
 ````
 ### Usage
 
+Refer here: [example.py](https://github.com/HellAmbro/Trading212API/blob/master/example.py)
 ````
 from pytrading212.order import TimeValidity, StopLimitOrder, StopOrder, LimitOrder
 
@@ -36,13 +37,17 @@ stop_limit = trading212.execute_order(
     StopLimitOrder(instrument_code="AMZN_US_EQ", quantity=2, limit_price=3000, stop_price=4000,
                    time_validity=TimeValidity.GOOD_TILL_CANCEL))
 
+sell_value_order = trading212.execute_value_order(ValueOrder('AMZN_US_EQ', value=-100))
+
+sell_stop_limit = trading212.execute_order(
+    StopLimitOrder(instrument_code="AMZN_US_EQ", quantity=2, limit_price=3000, stop_price=4000,
+                   time_validity=TimeValidity.GOOD_TILL_CANCEL))
+
 funds = trading212.get_funds()
 orders = trading212.get_orders()
 
 portfolio = trading212.get_portfolio_composition()
 performance = trading212.get_portfolio_performance(Period.LAST_DAY)
-
-trading212.finish()
 
 # finish your session
 trading.finish()
