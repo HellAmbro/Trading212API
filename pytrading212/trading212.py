@@ -71,12 +71,12 @@ class Trading212:
         # 120 seconds is a lot, but the site sometimes is very slow
         WebDriverWait(self.driver, 120).until(condition)
 
-        self.is_equity = False
+        # switch between CFD or Equity
         try:
             self.driver.find_element_by_class_name('trading-type')
-        except NoSuchElementException as e:
             self.is_equity = True
-
+        except NoSuchElementException:
+            self.is_equity = False
         if trading == Trading.EQUITY and not self.is_equity:
             self.switch()
         elif trading == Trading.CFD and self.is_equity:
@@ -111,13 +111,6 @@ class Trading212:
                    'User-Agent': self.user_agent,
                    'Cookie': f"{self.driver.get_cookies()}"}
         requests.post(f'{self.base_url}/rest/v3/account/switch', headers=headers)
-
-    # def switch_to_invest(self):
-    #     headers = {'Accept': 'application/json',
-    #                'Content-Type': 'application/json',
-    #                'User-Agent': self.user_agent,
-    #                'Cookie': f"{self.driver.get_cookies()}"}
-    #     requests.post(f'{self.base_url}/rest/v2/account/switch', headers=headers)
 
     def last_hour_hotlist(self):
         response = requests.get(f'{self.base_url}/trading212.com/rest/positions-tracker/deltas/hourly/1')
