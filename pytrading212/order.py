@@ -6,7 +6,7 @@ class TimeValidity(Enum):
     GOOD_TILL_CANCEL = 1,
 
 
-class _Order:
+class Order:
 
     def __init__(self, instrument_code):
         self.instrumentCode = instrument_code
@@ -16,7 +16,10 @@ class _Order:
         return self.__dict__.__str__().replace("'", "\"")
 
 
-class MarketOrder(_Order):
+""" EQUITY """
+
+
+class MarketOrder(Order):
     """Market Order: buy or sell a security at the best available price"""
 
     def __init__(self, instrument_code, quantity):
@@ -25,7 +28,7 @@ class MarketOrder(_Order):
         self.orderType = "MARKET"
 
 
-class LimitOrder(_Order):
+class LimitOrder(Order):
     """Limit Order: purchase or sell a security at a specified price or better."""
 
     def __init__(self, instrument_code: str, quantity: float, limit_price: float, time_validity: TimeValidity):
@@ -36,7 +39,7 @@ class LimitOrder(_Order):
         self.timeValidity = time_validity.name
 
 
-class StopOrder(_Order):
+class StopOrder(Order):
     """Stop Order: buy or sell a security when its price moves past a particular point"""
 
     def __init__(self, instrument_code: str, quantity: float, stop_price: float, time_validity: TimeValidity):
@@ -47,7 +50,7 @@ class StopOrder(_Order):
         self.timeValidity = time_validity.name
 
 
-class StopLimitOrder(_Order):
+class StopLimitOrder(Order):
     """Stop Limit Order: buy or sell a stock that combines the features of a stop order and a limit order"""
 
     def __init__(self, instrument_code: str, quantity: float, limit_price: float, stop_price: float,
@@ -60,7 +63,7 @@ class StopLimitOrder(_Order):
         self.timeValidity = time_validity.name
 
 
-class EquityOrder(_Order):
+class EquityOrder(Order):
     """Create a generic order, limit, stop_limit, market, stop"""
 
     def __init__(self, instrument_code, quantity, limit_price=0.0, stop_price=0.0,
@@ -89,7 +92,7 @@ class EquityOrder(_Order):
             self.orderType = "MARKET"
 
 
-class ValueOrder(_Order):
+class ValueOrder(Order):
     """Buy a stock by value,ex. 100$,1000$"""
 
     def __init__(self, instrument_code, value):
@@ -98,3 +101,23 @@ class ValueOrder(_Order):
         self.instrumentCode = instrument_code
         self.value = value
         self.orderType = "MARKET"
+
+
+"""CFD"""
+
+
+class CFDMarketOrder(Order):
+    def __init__(self, instrument_code, target_price, quantity):
+        super().__init__(instrument_code)
+        self.notify = "NONE"  # required for Trading212
+        # todo try to fix this
+        # fixme IMPORTANT! SINCE I'M NOT ABLE TO GET TARGET PRICE FROM TRADING212 TO EXECUTE MARKET ORDERS
+        # SELL OR BUY YOU NEED TO PASS A DUMMY TARGET PRICE WHICH MUST BE:
+        # > TO REAL BUY PRICE FOR BUY ORDERS,
+        # < TO REAL SELL PRICE FOR SELL ORDERS,
+        # EXAMPLE: COMPANY 'X' BUY: 100$, SELL: 99$,
+        # I WANT TO BUY, I SET target_price to 1000$, THE ORDER IS EXECUTED WITH THE BEST AVAILABLE PRICE, SO 100$,
+        # I WANT TO SELL, I SET target_price to 1$, THE ORDER IS EXECUTED WITH THE BEST AVAILABLE PRICE, SO 99$
+        # TRY IT YOURSELF IN DEMO MODE!
+        self.targetPrice = target_price
+        self.quantity = quantity

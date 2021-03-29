@@ -1,16 +1,28 @@
 import sys
 
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+
+from pytrading212 import *  # just for simplicity, not recommended, import only what you use
 from pytrading212.trading212 import Period
 
-from pytrading212 import Trading212, Mode
-from pytrading212.order import EquityOrder, ValueOrder, TimeValidity, LimitOrder, StopOrder, StopLimitOrder, MarketOrder
-
 if __name__ == "__main__":
-    # email and password passed as program arguments, change this with your credentials
+    # email and password passed as program arguments,
+    # change this with your credentials
     email = sys.argv[1]
     password = sys.argv[2]
 
-    trading212 = Trading212(email, password, mode=Mode.DEMO, headless=False)
+    # Use your preferred web driver with your custom options
+    # options = Options()
+    # headless (optional)
+    # options.add_argument('--headless')
+    # options.add_argument('--disable-gpu')
+    # Chrome
+    driver = webdriver.Chrome()
+    # or Firefox
+    # driver = webdriver.Firefox()
+
+    trading212 = Trading212(email, password, driver, mode=Mode.DEMO)
 
     market_order = trading212.execute_order(MarketOrder(instrument_code="AMZN_US_EQ", quantity=2))
 
@@ -49,5 +61,3 @@ if __name__ == "__main__":
 
     print(portfolio)
     print(performance)
-
-    trading212.finish()
