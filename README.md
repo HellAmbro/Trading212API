@@ -1,6 +1,6 @@
 # Trading212 API
 **Unofficial** API for Trading212 broker. 
-### CFD are not suppoerted yet. Investing only.
+### CFD are not suppoerted yet (only experimental for now). Investing only.
 ### Support this project
 <a href="https://www.buymeacoffee.com/hellambro" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" height="50" ></a>
 
