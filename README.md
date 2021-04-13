@@ -11,13 +11,13 @@ chromedriver in your PATH,
 ##### Download the latest stable release of chromedriver from https://chromedriver.chromium.org/, extract and move it to /usr/local/bin
 
 ### Install
-````
+````python
 pip install pytrading212
 ````
 ### Usage
 
 Refer here: [example.py](https://github.com/HellAmbro/Trading212API/blob/master/example.py)
-````
+````python
 from pytrading212.order import TimeValidity, StopLimitOrder, StopOrder, LimitOrder
 
 from pytrading212 import Trading212, Mode, MarketOrder
@@ -54,7 +54,7 @@ trading.finish()
 ````
 
 ### Portfolio
-````
+````python
 portfolio = trading212.get_portfolio_composition()
 ````
 ````
@@ -76,7 +76,7 @@ portfolio = trading212.get_portfolio_composition()
 ]
 ````
 ### Performance
-````
+````python
 trading212.get_portfolio_performance(Period.LAST_DAY)
 ````
 ````
