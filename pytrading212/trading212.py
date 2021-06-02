@@ -65,7 +65,7 @@ class Trading212:
         self.driver = driver
 
         # authenticate
-        self.driver.get("https://www.trading212.com/it/login")
+        self.driver.get("https://www.trading212.com/en/login")
         self.driver.find_element_by_name("login[username]").send_keys(username)
         self.driver.find_element_by_name("login[password]").send_keys(password)
         self.driver.find_element_by_class_name("button-login").click()
@@ -98,7 +98,8 @@ class Trading212:
         cookies = self.driver.get_cookies()
         if cookies is not None:
             for cookie in cookies:
-                if cookie["name"] == self.session:
+                # NOTE: A live cookie is sent whether we are in demo or live mode
+                if cookie["name"] == "TRADING212_SESSION_LIVE":
                     self.cookie = f"{self.session}={cookie['value']};"
         else:
             raise Exception("Unable to get cookies, aborting.")
