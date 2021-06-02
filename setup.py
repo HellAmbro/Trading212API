@@ -7,7 +7,7 @@ setuptools.setup(
     name="pytrading212",
     version="0.1.6",
     author="HellAmbro",
-    author_email="",
+    author_email="frambrosini1998@gmail.com",
     description="Unofficial Trading212 API",
     long_description=long_description,
     long_description_content_type="text/markdown",
