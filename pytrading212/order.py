@@ -134,7 +134,7 @@ class ValueOrder(Order):
 class CFDMarketOrder(Order):
     def __init__(self, instrument_code, target_price, quantity):
         super().__init__(instrument_code)
-        self.notify = "NONE"  # required for Trading212
+        self.notify = "NONE"  # required by Trading212
         # todo try to fix this
         # fixme IMPORTANT! SINCE I'M NOT ABLE TO GET TARGET PRICE FROM TRADING212 TO EXECUTE MARKET ORDERS
         # SELL OR BUY YOU NEED TO PASS A DUMMY TARGET PRICE WHICH MUST BE:

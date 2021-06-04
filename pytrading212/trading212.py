@@ -7,6 +7,8 @@ import logging
 from enum import Enum
 
 import requests
+import time
+import pandas as pd
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -19,12 +21,12 @@ from pytrading212.position import Position
 
 class Mode(Enum):
     DEMO = ("demo",)
-    LIVE = "live"
+    LIVE = ("live",)
 
 
 class Trading(Enum):
     CFD = (0,)
-    EQUITY = 1
+    EQUITY = (1,)
 
 
 class Period(Enum):
@@ -36,31 +38,21 @@ class Period(Enum):
     ALL = (5,)
 
 
-class UnknownModeException(Exception):
-    pass
-
-
 class InstrumentCodeNotFound(Exception):
     pass
 
 
 class Trading212:
     def __init__(
-        self,
-        username: str,
-        password: str,
-        driver: webdriver,
-        mode: Mode = Mode.DEMO,
-        trading: Trading = Trading.EQUITY,
+            self,
+            username: str,
+            password: str,
+            driver: webdriver,
+            mode: Mode = Mode.DEMO,
+            trading: Trading = Trading.EQUITY,
     ):
-        if mode == Mode.DEMO:
-            self.session = "TRADING212_SESSION_DEMO"
-            self.base_url = "https://demo.trading212.com"
-        elif mode == Mode.LIVE:
-            self.session = "TRADING212_SESSION_LIVE"
-            self.base_url = "https://live.trading212.com"
-        else:
-            raise UnknownModeException(f"{mode} is not valid")
+        self.session = f"TRADING212_SESSION_{mode.name}"
+        self.base_url = f"https://{mode.name.lower()}.trading212.com"
 
         self.driver = driver
 
@@ -78,28 +70,30 @@ class Trading212:
         # 120 seconds is a lot, but the site sometimes is very slow
         WebDriverWait(self.driver, 120).until(condition)
 
+        self.user_agent = self.driver.execute_script("return navigator.userAgent;")
+
+        # redirect to correct mode, DEMO or LIVE
+        if self.base_url not in self.driver.current_url:
+            self.driver.get(self.base_url)
+
         # switch between CFD or Equity
         try:
             self.driver.find_element_by_class_name("trading-type")
             self.is_equity = True
         except NoSuchElementException:
             self.is_equity = False
+
         if trading == Trading.EQUITY and not self.is_equity:
             self.switch()
         elif trading == Trading.CFD and self.is_equity:
             self.switch()
 
-        # redirect to correct mode, DEMO or LIVE
-        if self.base_url not in self.driver.current_url:
-            self.driver.get(self.base_url)
-
         # get session cookie
-        self.user_agent = self.driver.execute_script("return navigator.userAgent;")
         cookies = self.driver.get_cookies()
         if cookies is not None:
             for cookie in cookies:
-                # NOTE: A live cookie is sent whether we are in demo or live mode
-                if cookie["name"] == "TRADING212_SESSION_LIVE":
+                # Get appropriate cookie for this session, live or demo
+                if cookie['name'] == self.session:
                     self.cookie = f"{self.session}={cookie['value']};"
         else:
             raise Exception("Unable to get cookies, aborting.")
@@ -180,21 +174,24 @@ class Trading212:
 
     def get_portfolio_composition(self):
         # click portfolio section on right-sidepanel
-        self.driver.find_element_by_xpath(
-            '//*[@id="app"]/div[1]/div[2]/div[1]/div[1]/div[2]/div'
-        ).click()
-        # click on investments
+        right_sidepanel_xpath = '//*[@id="app"]/div[1]/div[2]/div[1]/div[1]/div[2]/div'
+        condition = expected_conditions.visibility_of_element_located(
+            (By.XPATH, right_sidepanel_xpath)
+        )
+        WebDriverWait(self.driver, 60).until(condition)
+        self.driver.find_element_by_xpath(right_sidepanel_xpath).click()
+
         positions = []
         try:
+            # click on investments
             self.driver.find_element_by_xpath(
                 '//*[@id="app"]/div[1]/div[2]/div[2]/div[1]/div/div[1]/div/div[2]/div[1]/div[2]/div[1]/div'
             ).click()
-            elements = self.driver.find_elements_by_class_name("investment-item")
-            for e in elements:
-                ticker = e.get_attribute("data-qa-item")
-                value = e.find_element_by_class_name("total-value").text
-                quantity = e.find_element_by_class_name("quantity").text
-                total_return = e.find_element_by_class_name("return").text
+            for item in self.driver.find_elements_by_class_name("investment-item"):
+                ticker = item.get_attribute("data-qa-item")
+                value = item.find_element_by_class_name("total-value").text
+                quantity = item.find_element_by_class_name("quantity").text
+                total_return = item.find_element_by_class_name("return").text
                 position = Position(ticker, value, quantity, total_return)
                 positions.append(position.__dict__)
         except Exception as e:
@@ -225,13 +222,12 @@ class Trading212:
 class Equity(Trading212):
     pass
 
-
 # todo improve this experimental class
 class CFD(Trading212):
     """ Experimental CFD support"""
 
     def __init__(
-        self, username: str, password: str, driver: webdriver, mode: Mode = Mode.DEMO
+            self, username: str, password: str, driver: webdriver, mode: Mode = Mode.DEMO
     ):
         super().__init__(username, password, driver, mode, Trading.CFD)
 

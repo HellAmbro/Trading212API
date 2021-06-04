@@ -1,62 +1,157 @@
 # Trading212 API
-**Unofficial** API for Trading212 broker. 
+
+**Unofficial** API for Trading212 broker.
+
 ### CFD are not suppoerted yet (only experimental for now). Investing only.
+
 ### Support this project
+
 <a href="https://www.buymeacoffee.com/hellambro" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" height="50" ></a>
 
 ### Disclaimer
-#### Nor me or Trading212 are responsible for the use of this API, first make sure that everything works well through the use of a **DEMO** account, then switch to **REAL** mode.
+
+#### Nor me or Trading212 are responsible for the use of this API, first make sure that everything works well through the use of a **
+
+DEMO** account, then switch to **REAL** mode.
+
 ### Prerequisites
-chromedriver in your PATH,
-##### Download the latest stable release of chromedriver from https://chromedriver.chromium.org/, extract and move it to /usr/local/bin
+
+WebDriver [Getting started with WebDriver](https://www.selenium.dev/documentation/en/getting_started_with_webdriver/)
+
+### Troubleshooting
+
+[Driver requirements](https://www.selenium.dev/documentation/en/webdriver/driver_requirements)
 
 ### Install
+
 ````python
-pip install pytrading212
+pip3 install pytrading212
 ````
+
 ### Usage
 
 Refer here: [example.py](https://github.com/HellAmbro/Trading212API/blob/master/example.py)
-````python
-from pytrading212.order import TimeValidity, StopLimitOrder, StopOrder, LimitOrder
 
-from pytrading212 import Trading212, Mode, MarketOrder
+````python
+import sys
+
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+
+from pytrading212 import *  # just for simplicity, not recommended, import only what you use
 from pytrading212.trading212 import Period
 
-trading212 = Trading212('your_email', 'password', mode=Mode.DEMO)
+# Use your preferred web driver with your custom options
+# options = Options()
+# headless (optional)
+# options.add_argument('--headless')
+# options.add_argument('--disable-gpu')
+# Chrome
+driver = webdriver.Chrome()
+# or Firefox
+# driver = webdriver.Firefox()
 
-market_order = trading212.execute_order(MarketOrder(instrument_code="AMZN_US_EQ", quantity=2))
+trading212 = Trading212('myemail', 'mypass', driver, mode=Mode.DEMO)
+
+market_order = trading212.execute_order(
+    MarketOrder(instrument_code="AMZN_US_EQ", quantity=2)
+)
 
 limit_order = trading212.execute_order(
-    LimitOrder(instrument_code="AMZN_US_EQ", quantity=2, limit_price=3000, time_validity=TimeValidity.DAY))
+    LimitOrder(
+        instrument_code="AMZN_US_EQ",
+        quantity=2,
+        limit_price=3000,
+        time_validity=TimeValidity.DAY,
+    )
+)
 
 stop_order = trading212.execute_order(
-    StopOrder(instrument_code="AMZN_US_EQ", quantity=2, stop_price=4000, time_validity=TimeValidity.GOOD_TILL_CANCEL))
+    StopOrder(
+        instrument_code="AMZN_US_EQ",
+        quantity=2,
+        stop_price=4000,
+        time_validity=TimeValidity.GOOD_TILL_CANCEL,
+    )
+)
 
 stop_limit = trading212.execute_order(
-    StopLimitOrder(instrument_code="AMZN_US_EQ", quantity=2, limit_price=3000, stop_price=4000,
-                   time_validity=TimeValidity.GOOD_TILL_CANCEL))
+    StopLimitOrder(
+        instrument_code="AMZN_US_EQ",
+        quantity=2,
+        limit_price=3000,
+        stop_price=4000,
+        time_validity=TimeValidity.GOOD_TILL_CANCEL,
+    )
+)
 
-sell_value_order = trading212.execute_value_order(ValueOrder('AMZN_US_EQ', value=-100))
+quantity_order = trading212.execute_order(
+    EquityOrder(
+        "AMZN_US_EQ",
+        quantity=2,
+        limit_price=3000,
+        stop_price=4000,
+        time_validity=TimeValidity.GOOD_TILL_CANCEL,
+    )
+)
 
-sell_stop_limit = trading212.execute_order(
-    StopLimitOrder(instrument_code="AMZN_US_EQ", quantity=2, limit_price=3000, stop_price=4000,
-                   time_validity=TimeValidity.GOOD_TILL_CANCEL))
+value_order = trading212.execute_value_order(ValueOrder("AMZN_US_EQ", value=100))
+
+# sell an equity that you own
+
+value_sell_order = trading212.execute_value_order(
+    ValueOrder("AMZN_US_EQ", value=-100)
+)
+
+sell_limit = trading212.execute_order(
+    LimitOrder(
+        instrument_code="AMZN_US_EQ",
+        quantity=-2,
+        limit_price=4000,
+        time_validity=TimeValidity.GOOD_TILL_CANCEL,
+    )
+)
+
+print(quantity_order)
+print(value_order)
 
 funds = trading212.get_funds()
 orders = trading212.get_orders()
 
+print(funds)
+print(orders)
+
 portfolio = trading212.get_portfolio_composition()
 performance = trading212.get_portfolio_performance(Period.LAST_DAY)
 
-# finish your session
-trading.finish()
+print(portfolio)
+print(performance)
+# Pandas integration examples
+funds_df = pd.DataFrame(funds)
+orders_df = pd.DataFrame(orders)
+portfolio_df = pd.DataFrame(portfolio)
+performance_df = pd.DataFrame(performance)
+
+# close webdriver 
+trading212.close()
+````
+### Funds (as DataFrame)
+````
+accountId                                            XXXXXXX                                   XXXXXXX
+tradingType                                           EQUITY                                       CFD
+currency                                                 EUR                                       EUR
+freeForWithdraw                                      2784.75                                  47680.45
+freeForCfdTransfer                                   2784.75                                         0
+total                                               10075.08                                  47680.45
+lockedCash          {'totalLockedCash': 0, 'lockedCash': []}  {'totalLockedCash': 0, 'lockedCash': []}
 ````
 
 ### Portfolio
+
 ````python
 portfolio = trading212.get_portfolio_composition()
 ````
+
 ````
 [
   {
@@ -75,10 +170,13 @@ portfolio = trading212.get_portfolio_composition()
   },
 ]
 ````
+
 ### Performance
+
 ````python
 trading212.get_portfolio_performance(Period.LAST_DAY)
 ````
+
 ````
 {
   'snapshots': [
@@ -98,6 +196,7 @@ trading212.get_portfolio_performance(Period.LAST_DAY)
     },
     -- snip --
 ````
-### How can I get instrument code?
-Lookup in companies.json, key "ticker"
 
+### How can I get instrument code?
+
+Lookup in companies.json, key "ticker"

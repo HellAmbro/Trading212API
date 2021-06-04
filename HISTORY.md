@@ -1,3 +1,9 @@
+### v0.1.7
+    * fix cookie bug
+    * fix get_portfolio_composition bug
+    * improved session logic
+### v0.1.6
+    * refactoring
 ### v0.1.5
     * removed orderType from _Order
     
