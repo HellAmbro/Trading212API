@@ -2,17 +2,21 @@
 
 **Unofficial** API for Trading212 broker.
 
-### CFD are not suppoerted yet (only experimental for now). Investing only.
+#### CFD are not suppoerted yet (only experimental for now). Investing only.
 
-### Support this project
+#### Support project
 
 <a href="https://www.buymeacoffee.com/hellambro" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" height="50" ></a>
 
+LTC: LbAzhtHBvQ2JCGhrcefUuvwNrv9VrQJoyJ  
+
+BTC: 1JWhMC3tiSjyR6t7BJuM7YRDg3xvPM2MDk
+
+ETH: 0x51f1f0061eadc024ab4bd1f3658d249044160006
+
 ### Disclaimer
 
-#### Nor me or Trading212 are responsible for the use of this API, first make sure that everything works well through the use of a **
-
-DEMO** account, then switch to **REAL** mode.
+#### Nor me or Trading212 are responsible for the use of this API, first make sure that everything works well through the use of a **DEMO** account, then switch to **REAL** mode.
 
 ### Prerequisites
 
