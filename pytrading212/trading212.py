@@ -58,9 +58,9 @@ class Trading212:
 
         # authenticate
         self.driver.get("https://www.trading212.com/en/login")
-        self.driver.find_element_by_name("login[username]").send_keys(username)
-        self.driver.find_element_by_name("login[password]").send_keys(password)
-        self.driver.find_element_by_class_name("button-login").click()
+        self.driver.find_element_by_name("email").send_keys(username)
+        self.driver.find_element_by_name("password").send_keys(password)
+        self.driver.find_element_by_class_name("submit-button").click()
 
         # wait until the site is fully loaded
         condition = expected_conditions.visibility_of_element_located(
