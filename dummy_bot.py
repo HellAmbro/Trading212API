@@ -1,7 +1,11 @@
-# Author: HellAmbro
-# I wrote this dummy bot in 5 minutes just to show how a bot could look like
-# Please don't use this bot for real purposes
-# I use alpha vantage to get ticker data, use whatever you want if you are more familiar with
+"""
+Author: HellAmbro
+
+I wrote this dummy bot in 5 minutes just to show how a bot could look like
+Please don't use this bot for real purposes
+I use alpha vantage to get ticker data, use whatever you want if you are more familiar with
+
+"""
 
 import sys
 import time
@@ -15,7 +19,7 @@ email = sys.argv[1]
 password = sys.argv[2]
 
 driver = webdriver.Chrome(executable_path='chromedriver.exe')
-trading212 = Trading212(email, password, driver, mode=Mode.DEMO)
+trading212 = Trading212(username=email, password=password, driver=driver, mode=Mode.DEMO)
 
 # Get json object with the intraday data and another with  the call's metadata
 ts = TimeSeries(key='99X56PNBXN3V0SDT', output_format='pandas')
@@ -40,9 +44,11 @@ while True:
         # SELL (note 'quantity=-1')
         trading212.execute_order(MarketOrder(instrument_code="AMZN_US_EQ", quantity=-1))
         is_bought = False
+
     # wait 1 minute for the next tick
     time.sleep(60)
 
 # I know this bot is ridiculous but it's just for example purpose, I hope nobody use it
 # If you're writing a trading bot (a real bot of course, not this) contact me if you want
+
 # I'm trying to do the same think, i can help you.

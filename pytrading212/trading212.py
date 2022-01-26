@@ -20,8 +20,8 @@ from pytrading212.position import Position
 
 
 class Mode(Enum):
-    DEMO = ("demo",)
-    LIVE = ("live",)
+    DEMO = "demo"
+    LIVE = "live"
 
 
 class Trading(Enum):
