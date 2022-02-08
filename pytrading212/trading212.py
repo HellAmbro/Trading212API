@@ -12,7 +12,7 @@ import pandas as pd
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support import expected_conditions, wait
 from selenium.webdriver.support.ui import WebDriverWait
 
 from pytrading212.order import ValueOrder
@@ -20,8 +20,8 @@ from pytrading212.position import Position
 
 
 class Mode(Enum):
-    DEMO = "demo"
-    LIVE = "live"
+    DEMO = ("demo",)
+    LIVE = ("live",)
 
 
 class Trading(Enum):
@@ -57,10 +57,17 @@ class Trading212:
         self.driver = driver
 
         # authenticate
+        
         self.driver.get("https://www.trading212.com/en/login")
         self.driver.find_element_by_name("email").send_keys(username)
         self.driver.find_element_by_name("password").send_keys(password)
-        self.driver.find_element_by_class_name("submit-button").click()
+        time.sleep(1) #Let the Accept all cookies popup arrive
+        self.driver.find_element_by_class_name("button_button__tDDzY.button_accent__dYsGU.cookies-notice_button__3K8cT.cookies-notice_button-accent__2rm8R").click() #Click Accept all cookies
+        self.driver.find_element_by_class_name("submit-button_input__3s_QD").click() #Click login button
+
+     
+ 
+
 
         # wait until the site is fully loaded
         condition = expected_conditions.visibility_of_element_located(
@@ -94,7 +101,7 @@ class Trading212:
             for cookie in cookies:
                 # Get appropriate cookie for this session, live or demo
                 if cookie['name'] == self.session:
-                    self.cookie = f"{self.session}={cookie['value']};"
+                    self.cookie = method_decorator(f"{self.session}={cookie['value']};")
         else:
             raise Exception("Unable to get cookies, aborting.")
 
