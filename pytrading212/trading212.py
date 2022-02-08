@@ -101,7 +101,7 @@ class Trading212:
             for cookie in cookies:
                 # Get appropriate cookie for this session, live or demo
                 if cookie['name'] == self.session:
-                    self.cookie = method_decorator(f"{self.session}={cookie['value']};")
+                    self.cookie = f"{self.session}={cookie['value']};"
         else:
             raise Exception("Unable to get cookies, aborting.")
 
