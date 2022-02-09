@@ -1,3 +1,6 @@
+### v0.1.8
+    * fix cookie popup
+    * several bug fixed
 ### v0.1.7
     * fix cookie bug
     * fix get_portfolio_composition bug
@@ -6,8 +9,6 @@
     * refactoring
 ### v0.1.5
     * removed orderType from _Order
-    
-
 ### v0.1.4
     * Fix real mode error
     * Update to readme

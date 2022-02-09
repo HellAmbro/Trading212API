@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pytrading212",
-    version="0.1.7",
+    version="0.1.8",
     author="HellAmbro",
     author_email="frambrosini1998@gmail.com",
     description="Unofficial Trading212 API",
