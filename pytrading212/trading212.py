@@ -20,22 +20,22 @@ from pytrading212.position import Position
 
 
 class Mode(Enum):
-    DEMO = ("demo",)
-    LIVE = ("live",)
+    DEMO = "demo",
+    LIVE = "live"
 
 
 class Trading(Enum):
-    CFD = (0,)
-    EQUITY = (1,)
+    CFD = 0,
+    EQUITY = 1,
 
 
 class Period(Enum):
-    LAST_DAY = (0,)
-    LAST_WEEK = (1,)
-    LAST_MONTH = (2,)
-    LAST_THREE_MONTHS = (3,)
-    LAST_YEAR = (4,)
-    ALL = (5,)
+    LAST_DAY = 0,
+    LAST_WEEK = 1,
+    LAST_MONTH = 2,
+    LAST_THREE_MONTHS = 3,
+    LAST_YEAR = 4,
+    ALL = 5,
 
 
 class InstrumentCodeNotFound(Exception):
@@ -56,18 +56,20 @@ class Trading212:
 
         self.driver = driver
 
-        # authenticate
-        
+        # Authenticate
+
         self.driver.get("https://www.trading212.com/en/login")
         self.driver.find_element_by_name("email").send_keys(username)
         self.driver.find_element_by_name("password").send_keys(password)
-        time.sleep(1) #Let the Accept all cookies popup arrive
-        self.driver.find_element_by_class_name("button_button__tDDzY.button_accent__dYsGU.cookies-notice_button__3K8cT.cookies-notice_button-accent__2rm8R").click() #Click Accept all cookies
-        self.driver.find_element_by_class_name("submit-button_input__3s_QD").click() #Click login button
 
-     
- 
+        # Click Accept all cookies
+        self.driver.find_element_by_class_name(
+            "button_button__tDDzY.button_accent__dYsGU"
+            ".cookies-notice_button__3K8cT"
+            ".cookies-notice_button-accent__2rm8R").click()
 
+        # Click login button
+        self.driver.find_element_by_class_name("submit-button_input__3s_QD").click()
 
         # wait until the site is fully loaded
         condition = expected_conditions.visibility_of_element_located(
@@ -228,6 +230,7 @@ class Trading212:
 # todo move here equity orders and logic
 class Equity(Trading212):
     pass
+
 
 # todo improve this experimental class
 class CFD(Trading212):
