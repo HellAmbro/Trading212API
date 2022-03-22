@@ -17,7 +17,8 @@ ETH: 0x51f1f0061eadc024ab4bd1f3658d249044160006
 ### Disclaimer
 
 #### Nor me or Trading212 are responsible for the use of this API, first make sure that everything works well through the use of a **DEMO** account, then switch to **REAL** mode.
-
+### Medium Article
+- [Use Trading212 for Automatic Trading: an introduction to pytrading212](https://medium.com/@francescoelambroambrosini/use-trading212-for-automatic-trading-an-introduction-to-pytrading212-367449b40a6)
 ### Prerequisites
 
 WebDriver [Getting started with WebDriver](https://www.selenium.dev/documentation/en/getting_started_with_webdriver/)
