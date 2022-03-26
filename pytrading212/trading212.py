@@ -7,12 +7,10 @@ import logging
 from enum import Enum
 
 import requests
-import time
-import pandas as pd
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions, wait
+from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
 from pytrading212.order import ValueOrder
@@ -115,6 +113,13 @@ class Trading212:
             "Cookie": self.cookie,
         }
 
+    # 'with as' support
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.finish()
+
     def finish(self):
         self.driver.close()
 
@@ -146,9 +151,7 @@ class Trading212:
         return json.loads(response.content.decode("utf-8"))
 
     def get_fundamentals(self, isin):
-        response = requests.get(
-            f"{self.base_url}/rest/companies/fundamentals?isin={isin}"
-        )
+        response = requests.get(f"{self.base_url}/rest/companies/fundamentals?isin={isin}")
         return json.loads(response.content.decode("utf-8"))
 
     def execute_order(self, order):
@@ -236,9 +239,7 @@ class Equity(Trading212):
 class CFD(Trading212):
     """ Experimental CFD support"""
 
-    def __init__(
-            self, username: str, password: str, driver: webdriver, mode: Mode = Mode.DEMO
-    ):
+    def __init__(self, username: str, password: str, driver: webdriver, mode: Mode = Mode.DEMO):
         super().__init__(username, password, driver, mode, Trading.CFD)
 
     def execute_order(self, order):
