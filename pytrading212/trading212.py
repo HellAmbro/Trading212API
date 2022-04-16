@@ -53,18 +53,14 @@ class Trading212:
         self.base_url = f"https://{mode.name.lower()}.trading212.com"
 
         self.driver = driver
-
-        # Authenticate
-
         self.driver.get("https://www.trading212.com/en/login")
-        self.driver.find_element_by_name("email").send_keys(username)
-        self.driver.find_element_by_name("password").send_keys(password)
 
         # Click Accept all cookies
-        self.driver.find_element_by_class_name(
-            "button_button__tDDzY.button_accent__dYsGU"
-            ".cookies-notice_button__3K8cT"
-            ".cookies-notice_button-accent__2rm8R").click()
+        self.driver.find_element_by_class_name('cookies-notice_button-accent__2rm8R').click()
+
+        # Authenticate
+        self.driver.find_element_by_name("email").send_keys(username)
+        self.driver.find_element_by_name("password").send_keys(password)
 
         # Click login button
         self.driver.find_element_by_class_name("submit-button_input__3s_QD").click()
@@ -186,19 +182,17 @@ class Trading212:
 
     def get_portfolio_composition(self):
         # click portfolio section on right-sidepanel
-        right_sidepanel_xpath = '//*[@id="app"]/div[1]/div[2]/div[1]/div[1]/div[2]/div'
+        right_sidepanel_portfolio_class = 'portfolio-icon'
         condition = expected_conditions.visibility_of_element_located(
-            (By.XPATH, right_sidepanel_xpath)
+            (By.CLASS_NAME, right_sidepanel_portfolio_class)
         )
-        WebDriverWait(self.driver, 60).until(condition)
-        self.driver.find_element_by_xpath(right_sidepanel_xpath).click()
+        WebDriverWait(self.driver, 30).until(condition)
+        self.driver.find_element_by_class_name(right_sidepanel_portfolio_class).click()
 
         positions = []
         try:
             # click on investments
-            self.driver.find_element_by_xpath(
-                '//*[@id="app"]/div[1]/div[2]/div[2]/div[1]/div/div[1]/div/div[2]/div[1]/div[2]/div[1]/div'
-            ).click()
+            self.driver.find_element_by_class_name('investment-tab').click()
             for item in self.driver.find_elements_by_class_name("investment-item"):
                 ticker = item.get_attribute("data-qa-item")
                 value = item.find_element_by_class_name("total-value").text
