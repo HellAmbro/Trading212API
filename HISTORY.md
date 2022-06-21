@@ -1,3 +1,6 @@
+### v0.1.9
+    * general improvements
+    * bug fixes
 ### v0.1.8
     * fix cookie popup
     * several bug fixed

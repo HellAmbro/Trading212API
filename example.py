@@ -1,8 +1,10 @@
 import sys
 
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
 import pandas as pd
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
 from pytrading212 import *  # just for simplicity, not recommended, import only what you use
 from pytrading212.trading212 import Period
 
@@ -18,7 +20,9 @@ if __name__ == "__main__":
     # options.add_argument('--headless')
     # options.add_argument('--disable-gpu')
     # Chrome
-    driver = webdriver.Chrome(executable_path='chromedriver.exe')
+    options = webdriver.ChromeOptions()
+    #options.add_argument('headless')
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     # or Firefox
     # driver = webdriver.Firefox()
 

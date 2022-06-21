@@ -13,6 +13,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/HellAmbro/Trading212API",
     packages=setuptools.find_packages(),
+    install_requires=[
+        'selenium',
+    ],
     classifiers=[
         "Programming Language :: Python :: 3.7",
         "Operating System :: OS Independent",
