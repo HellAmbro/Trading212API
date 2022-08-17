@@ -56,14 +56,14 @@ class Trading212:
         self.driver.get("https://www.trading212.com/en/login")
 
         # Click Accept all cookies
-        self.driver.find_element_by_class_name('cookies-notice_button-accent__2rm8R').click()
+        self.driver.find_element(By.CLASS_NAME, 'cookies-notice_button-accent__2rm8R').click()
 
         # Authenticate
-        self.driver.find_element_by_name("email").send_keys(username)
-        self.driver.find_element_by_name("password").send_keys(password)
+        self.driver.find_element(By.NAME, "email").send_keys(username)
+        self.driver.find_element(By.NAME, "password").send_keys(password)
 
         # Click login button
-        self.driver.find_element_by_class_name("submit-button_input__3s_QD").click()
+        self.driver.find_element(By.CLASS_NAME, "submit-button_input__3s_QD").click()
 
         # wait until the site is fully loaded
         condition = expected_conditions.visibility_of_element_located(
@@ -81,7 +81,7 @@ class Trading212:
 
         # switch between CFD or Equity
         try:
-            self.driver.find_element_by_class_name("trading-type")
+            self.driver.find_element(By.CLASS_NAME, "trading-type")
             self.is_equity = True
         except NoSuchElementException:
             self.is_equity = False
@@ -187,17 +187,17 @@ class Trading212:
             (By.CLASS_NAME, right_sidepanel_portfolio_class)
         )
         WebDriverWait(self.driver, 30).until(condition)
-        self.driver.find_element_by_class_name(right_sidepanel_portfolio_class).click()
+        self.driver.find_element(By.CLASS_NAME, right_sidepanel_portfolio_class).click()
 
         positions = []
         try:
             # click on investments
-            self.driver.find_element_by_class_name('investment-tab').click()
-            for item in self.driver.find_elements_by_class_name("investment-item"):
+            self.driver.find_element(By.CLASS_NAME, 'investment-tab').click()
+            for item in self.driver.find_elements(By.CLASS_NAME, "investment-item"):
                 ticker = item.get_attribute("data-qa-item")
-                value = item.find_element_by_class_name("total-value").text
-                quantity = item.find_element_by_class_name("quantity").text
-                total_return = item.find_element_by_class_name("return").text
+                value = item.find_element(By.CLASS_NAME, "total-value").text
+                quantity = item.find_element(By.CLASS_NAME, "quantity").text
+                total_return = item.find_element(By.CLASS_NAME, "return").text
                 position = Position(ticker, value, quantity, total_return)
                 positions.append(position.__dict__)
         except Exception as e:

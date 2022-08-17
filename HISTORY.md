@@ -1,3 +1,6 @@
+### v0.2.0
+    * modified setup.py
+    * updated to selenium 4.4
 ### v0.1.9
     * general improvements
     * bug fixes

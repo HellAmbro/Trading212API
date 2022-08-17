@@ -2,3 +2,4 @@ selenium
 pandas
 alpha_vantage
 webdriver-manager
+requests

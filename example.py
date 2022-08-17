@@ -21,7 +21,7 @@ if __name__ == "__main__":
     # options.add_argument('--disable-gpu')
     # Chrome
     options = webdriver.ChromeOptions()
-    #options.add_argument('headless')
+    # options.add_argument('headless')
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     # or Firefox
     # driver = webdriver.Firefox()
@@ -111,4 +111,3 @@ if __name__ == "__main__":
 
     portfolio_df = pd.DataFrame(portfolio)
     performance_df = pd.DataFrame(performance)
-
