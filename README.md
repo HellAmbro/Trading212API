@@ -35,8 +35,8 @@ pip3 install pytrading212
 
 ### Usage
 
-Refer here: [example.py](https://github.com/HellAmbro/Trading212API/blob/master/example.py)
-
+_Warning: this snippet may contain obsolete code and maybe not updated, refer here [example.py](https://github.com/HellAmbro/Trading212API/blob/master/example.py)
+for the latest changes_
 ````python
 import sys
 
@@ -138,7 +138,7 @@ portfolio_df = pd.DataFrame(portfolio)
 performance_df = pd.DataFrame(performance)
 
 # close webdriver 
-trading212.close()
+trading212.finish()
 ````
 ### Funds (as DataFrame)
 ````

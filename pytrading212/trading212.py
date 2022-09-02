@@ -4,8 +4,12 @@
 
 import json
 import logging
+from datetime import datetime
 from enum import Enum
+from time import strftime
+from urllib.parse import urlencode
 
+import pytz
 import requests
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
@@ -140,14 +144,40 @@ class Trading212:
         )
         return json.loads(response.content.decode("utf-8"))
 
-    def get_orders(self):
+    # todo document
+    def get_orders(self, older_than: datetime = None, newer_than: datetime = None):
+        params = {'olderThan': strftime(older_than.isoformat()),
+                  'newerThan': strftime(newer_than.isoformat())
+                  }
+
         response = requests.get(
-            f"{self.base_url}/rest/history/orders", headers=self.headers
+            f"{self.base_url}/rest/history/orders", headers=self.headers, params=urlencode(params)
+        )
+        return json.loads(response.content.decode("utf-8"))
+
+    def get_transactions(self, older_than: datetime = None, newer_than: datetime = None):
+        params = {'olderThan': strftime(older_than.isoformat()),
+                  'newerThan': strftime(newer_than.isoformat())
+                  }
+
+        response = requests.get(
+            f"{self.base_url}/rest/history/transactions", headers=self.headers, params=urlencode(params)
+        )
+        return json.loads(response.content.decode("utf-8"))
+
+    def get_dividends(self, older_than: datetime = None, newer_than: datetime = None):
+        params = {'olderThan': strftime(older_than.isoformat()),
+                  'newerThan': strftime(newer_than.isoformat())
+                  }
+
+        response = requests.get(
+            f"{self.base_url}/rest/history/dividends", headers=self.headers, params=urlencode(params)
         )
         return json.loads(response.content.decode("utf-8"))
 
     def get_fundamentals(self, isin):
-        response = requests.get(f"{self.base_url}/rest/companies/fundamentals?isin={isin}")
+        params = {'isin': isin}
+        response = requests.get(f"{self.base_url}/rest/companies/fundamentals", params=params)
         return json.loads(response.content.decode("utf-8"))
 
     def execute_order(self, order):
@@ -207,6 +237,12 @@ class Trading212:
     def get_companies(self):
         response = requests.get(
             url=f"{self.base_url}/rest/companies", headers=self.headers
+        )
+        return json.loads(response.content.decode("utf-8"))
+
+    def max_sell_quantity(self, order_id):
+        response = requests.get(
+            f"{self.base_url}/rest/v1/equity/value-order/min-max?instrumentCode={order_id}", headers=self.headers
         )
         return json.loads(response.content.decode("utf-8"))
 

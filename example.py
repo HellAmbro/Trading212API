@@ -1,6 +1,8 @@
+import datetime
 import sys
 
 import pandas as pd
+import pytz
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -91,10 +93,20 @@ if __name__ == "__main__":
     print(value_order)
 
     funds = trading212.get_funds()
-    orders = trading212.get_orders()
-
     print(funds)
-    print(orders)
+
+    # Timezone is MANDATORY, please specify it, otherwise it won't work!
+    older_than = datetime.datetime.now(tz=pytz.timezone("Europe/Rome"))
+    newer_than = datetime.datetime(year=2022, month=5, day=9, tzinfo=pytz.timezone("Europe/Rome"))
+
+    orders = trading212.get_orders(older_than=older_than, newer_than=newer_than)
+    print('Orders', orders)
+
+    transactions = trading212.get_transactions(older_than=older_than, newer_than=newer_than)
+    print('Transactions', transactions)
+
+    dividends = trading212.get_dividends(older_than=older_than, newer_than=newer_than)
+    print('Dividends', dividends)
 
     portfolio = trading212.get_portfolio_composition()
     performance = trading212.get_portfolio_performance(Period.LAST_DAY)

@@ -1,3 +1,7 @@
+### v0.2.1
+    * dividends history
+    * transactions history
+    * full order history
 ### v0.2.0
     * modified setup.py
     * updated to selenium 4.4
