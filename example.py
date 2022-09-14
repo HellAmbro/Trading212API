@@ -101,6 +101,21 @@ if __name__ == "__main__":
 
     orders = trading212.get_orders(older_than=older_than, newer_than=newer_than)
     print('Orders', orders)
+    for o in orders['data']:
+        order_details = trading212.get_order_details(o['detailsPath'])
+
+        # FX fee
+        fx_fee = order_details['sections'][3]['rows'][0]['value']['context']['amount']
+
+        # Total
+        total = order_details['sections'][3]['rows'][1]['value']['context']['amount']
+
+        # Exchange Rate
+        exchange_rate = order_details['sections'][2]['rows'][4]['value']['context']['quantity']
+        print(order_details)
+
+        # changeRate
+    # Orders with more details
 
     transactions = trading212.get_transactions(older_than=older_than, newer_than=newer_than)
     print('Transactions', transactions)

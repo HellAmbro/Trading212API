@@ -1,8 +1,7 @@
-selenium~=4.4.0
-pandas~=1.4.3
+selenium
+pandas
 alpha_vantage
 webdriver-manager
-requests~=2.28.1
-setuptools~=65.0.2
-pytz~=2022.2.1
-pytrading212~=0.1.9
+requests
+pytz
+pytrading212

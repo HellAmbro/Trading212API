@@ -165,6 +165,10 @@ class Trading212:
         )
         return json.loads(response.content.decode("utf-8"))
 
+    def get_order_details(self, details_path):
+        response = requests.get(f"{self.base_url}/rest/history{details_path}", headers=self.headers)
+        return json.loads(response.content.decode("utf-8"))
+
     def get_dividends(self, older_than: datetime = None, newer_than: datetime = None):
         params = {'olderThan': strftime(older_than.isoformat()),
                   'newerThan': strftime(newer_than.isoformat())
