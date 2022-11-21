@@ -131,3 +131,4 @@ acme.json
 # Databases
 *.sqlite
 *.db
+/dist/

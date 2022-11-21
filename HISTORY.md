@@ -1,3 +1,7 @@
+### v0.2.3
+    * Fix login button class error
+### v0.2.2
+    * Fix cookies button class error
 ### v0.2.1
     * dividends history
     * transactions history

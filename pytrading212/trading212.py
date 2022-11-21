@@ -60,14 +60,14 @@ class Trading212:
         self.driver.get("https://www.trading212.com/en/login")
 
         # Click Accept all cookies
-        self.driver.find_element(By.CLASS_NAME, 'cookies-notice_button-accent__2rm8R').click()
+        self.driver.find_element(By.CLASS_NAME, 'CookiesNotice_button-accent__3Qvh7').click()
 
         # Authenticate
         self.driver.find_element(By.NAME, "email").send_keys(username)
         self.driver.find_element(By.NAME, "password").send_keys(password)
 
         # Click login button
-        self.driver.find_element(By.CLASS_NAME, "submit-button_input__3s_QD").click()
+        self.driver.find_element(By.CLASS_NAME, "SubmitButton_input__K3jH8").click()
 
         # wait until the site is fully loaded
         condition = expected_conditions.visibility_of_element_located(
@@ -264,12 +264,7 @@ class Trading212:
         return json.loads(response.content.decode("utf-8"))
 
 
-# todo move here equity orders and logic
-class Equity(Trading212):
-    pass
-
-
-# todo improve this experimental class
+# Experimental class
 class CFD(Trading212):
     """ Experimental CFD support"""
 
@@ -285,6 +280,13 @@ class CFD(Trading212):
         )
         return json.loads(response.content.decode("utf-8"))
 
+    def close_position(self, position_id):
+        """Close an open position, position_id is needed"""
+        response = requests.delete(
+            url=f"{self.base_url}/rest/v2/trading/open-positions/close/{position_id}",
+            headers=self.headers,
+        )
+        return json.loads(response.content.decode("utf-8"))
     # response = requests.post(https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/EURUSD)
     # {"notify": "NONE", "order1": {"price": 232, "quantity": -70}, "order2": {"price": 231.3, "quantity": -70}}
     # https://demo.trading212.com/rest/v2/pending-orders/entry-oco/VOW3
