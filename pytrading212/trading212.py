@@ -85,7 +85,7 @@ class Trading212:
 
         # switch between CFD or Equity
         try:
-            self.driver.find_element(By.CLASS_NAME, "trading-type")
+            self.driver.find_element(By.CLASS_NAME, "equity")
             self.is_equity = True
         except NoSuchElementException:
             self.is_equity = False
@@ -100,7 +100,7 @@ class Trading212:
         if cookies is not None:
             for cookie in cookies:
                 # Get appropriate cookie for this session, live or demo
-                if cookie['name'] == self.session:
+                if self.session in cookie['name']:
                     self.cookie = f"{self.session}={cookie['value']};"
         else:
             raise Exception("Unable to get cookies, aborting.")
@@ -130,7 +130,7 @@ class Trading212:
             "User-Agent": self.user_agent,
             "Cookie": f"{self.driver.get_cookies()}",
         }
-        requests.post(f"{self.base_url}/rest/v3/account/switch", headers=headers)
+        requests.post(f"{self.base_url}/rest/v1/account/switch", headers=headers)
 
     def last_hour_hotlist(self):
         response = requests.get(
