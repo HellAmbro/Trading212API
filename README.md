@@ -35,8 +35,8 @@ pip3 install pytrading212
 
 ### Usage
 
-_Warning: this snippet may contain obsolete code and maybe not updated, refer here [example.py](https://github.com/HellAmbro/Trading212API/blob/master/example.py)
-for the latest changes_
+_Warning: this snippet may contain obsolete code and maybe not updated, refer here [example.py](https://github.com/HellAmbro/Trading212API/blob/master/examples/example.py)
+for the latest changes, inside the examples folder._
 ````python
 import sys
 

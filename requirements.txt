@@ -4,4 +4,3 @@ alpha_vantage
 webdriver-manager
 requests
 pytz
-pytrading212

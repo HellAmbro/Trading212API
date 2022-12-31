@@ -60,14 +60,14 @@ class Trading212:
         self.driver.get("https://www.trading212.com/en/login")
 
         # Click Accept all cookies
-        self.driver.find_element(By.CLASS_NAME, 'CookiesNotice_button-accent__3Qvh7').click()
+        self.driver.find_element(By.CLASS_NAME, 'CookiesNotice_button__q5YaL').click()
 
         # Authenticate
         self.driver.find_element(By.NAME, "email").send_keys(username)
         self.driver.find_element(By.NAME, "password").send_keys(password)
 
         # Click login button
-        self.driver.find_element(By.CLASS_NAME, "SubmitButton_input__K3jH8").click()
+        self.driver.find_element(By.CLASS_NAME, "SubmitButton_input__IV2dl").click()
 
         # wait until the site is fully loaded
         condition = expected_conditions.visibility_of_element_located(

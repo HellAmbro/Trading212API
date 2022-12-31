@@ -1,3 +1,5 @@
+### v0.2.4
+    * Updated login and cookies button class
 ### v0.2.3
     * Fix login button class error
 ### v0.2.2
