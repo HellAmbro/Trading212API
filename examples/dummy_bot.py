@@ -19,7 +19,7 @@ email = sys.argv[1]
 password = sys.argv[2]
 
 driver = webdriver.Chrome(executable_path='chromedriver.exe')
-trading212 = Trading212(username=email, password=password, driver=driver, mode=Mode.DEMO)
+trading212 = Trading212(email=email, password=password, driver=driver, mode=Mode.DEMO)
 
 # Get json object with the intraday data and another with  the call's metadata
 ts = TimeSeries(key='99X56PNBXN3V0SDT', output_format='pandas')

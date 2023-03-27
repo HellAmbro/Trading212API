@@ -1,3 +1,4 @@
 pytz
 selenium
 requests
+rich

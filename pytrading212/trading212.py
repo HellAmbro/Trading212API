@@ -1,6 +1,4 @@
-# API for Trading212 Platform
-
-# Author: Francesco Ambrosini
+"""API for Trading212 Platform"""
 
 import json
 import logging
@@ -15,36 +13,40 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
-from pytrading212 import constants
-from pytrading212.constants import Mode, Trading, Period
-from pytrading212.order import ValueOrder
+from pytrading212 import constants, console
+from pytrading212.order import ValueOrder, CFDOrder, EquityOrder
 from pytrading212.position import Position
 
 
 class Trading212:
     def __init__(
             self,
-            username: str,
+            email: str,
             password: str,
             driver: webdriver,
-            mode: Mode = Mode.DEMO,
-            trading: Trading = Trading.EQUITY,
+            mode: constants.Mode = constants.Mode.DEMO,
+            trading: constants.Trading = constants.Trading.EQUITY,
     ):
         self.session = f"TRADING212_SESSION_{mode.name}"
         self.base_url = f"https://{mode.name.lower()}.trading212.com"
 
+        console.log(f"Starting PyTrading212 in [green]{mode.name}[/green] Mode")
+
         self.driver = driver
         self.driver.get(constants.LOGIN_URL)
-
-        # Click Accept all cookies
-        self.driver.find_element(By.CLASS_NAME, constants.COOKIES_NOTICE_BUTTON).click()
+        # Click Accept all cookies if it appears
+        try:
+            self.driver.find_element(By.CLASS_NAME, constants.COOKIES_NOTICE_BUTTON).click()
+        except NoSuchElementException:
+            pass  # ignore
+        console.log(f"Authenticating")
 
         # Authenticate
-        self.driver.find_element(By.NAME, "email").send_keys(username)
+        self.driver.find_element(By.NAME, "email").send_keys(email)
         self.driver.find_element(By.NAME, "password").send_keys(password)
 
         # Click login button
-        self.driver.find_element(By.CLASS_NAME, "SubmitButton_input__IV2dl").click()
+        self.driver.find_element(By.CLASS_NAME, constants.LOGIN_BUTTON).click()
 
         # wait until the site is fully loaded
         condition = expected_conditions.visibility_of_element_located(
@@ -56,20 +58,20 @@ class Trading212:
 
         self.user_agent = self.driver.execute_script("return navigator.userAgent;")
 
-        # redirect to correct mode, DEMO or LIVE
-        if self.base_url not in self.driver.current_url:
+        # Redirect to correct mode, DEMO or LIVE
+        if mode.name not in self.driver.current_url:
             self.driver.get(self.base_url)
 
-        # switch between CFD or Equity
+        # Switch between CFD or Equity
         try:
             self.driver.find_element(By.CLASS_NAME, "equity")
             self.is_equity = True
         except NoSuchElementException:
             self.is_equity = False
 
-        if trading == Trading.EQUITY and not self.is_equity:
+        if trading == constants.Trading.EQUITY and not self.is_equity:
             self.switch()
-        elif trading == Trading.CFD and self.is_equity:
+        elif trading == constants.Trading.CFD and self.is_equity:
             self.switch()
 
         # Get session cookie
@@ -100,6 +102,7 @@ class Trading212:
         self.driver.close()
 
     def switch(self):
+        """todo"""
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -109,6 +112,7 @@ class Trading212:
         requests.post(f"{self.base_url}/rest/v1/account/switch", headers=headers)
 
     def last_hour_hotlist(self):
+        """todo"""
         response = requests.get(
             f"{self.base_url}/trading212.com/rest/positions-tracker/deltas/hourly/1"
         )
@@ -121,9 +125,11 @@ class Trading212:
         return json.loads(response.content.decode("utf-8"))
 
     def get_orders(self, older_than: datetime, newer_than: datetime):
-        params = {'olderThan': strftime(older_than.isoformat()),
-                  'newerThan': strftime(newer_than.isoformat())
-                  }
+        """todo"""
+        params = {
+            'olderThan': strftime(older_than.isoformat()),
+            'newerThan': strftime(newer_than.isoformat())
+        }
 
         response = requests.get(
             f"{self.base_url}/rest/history/orders", headers=self.headers, params=urlencode(params)
@@ -131,20 +137,23 @@ class Trading212:
         return json.loads(response.content.decode("utf-8"))
 
     def get_transactions(self, older_than: datetime, newer_than: datetime):
-        params = {'olderThan': strftime(older_than.isoformat()),
-                  'newerThan': strftime(newer_than.isoformat())
-                  }
-
+        """todo"""
+        params = {
+            'olderThan': strftime(older_than.isoformat()),
+            'newerThan': strftime(newer_than.isoformat())
+        }
         response = requests.get(
             f"{self.base_url}/rest/history/transactions", headers=self.headers, params=urlencode(params)
         )
         return json.loads(response.content.decode("utf-8"))
 
     def get_order_details(self, details_path):
+        """todo"""
         response = requests.get(f"{self.base_url}/rest/history{details_path}", headers=self.headers)
         return json.loads(response.content.decode("utf-8"))
 
     def get_dividends(self, older_than: datetime, newer_than: datetime):
+        """todo"""
         params = {'olderThan': strftime(older_than.isoformat()),
                   'newerThan': strftime(newer_than.isoformat())
                   }
@@ -155,36 +164,13 @@ class Trading212:
         return json.loads(response.content.decode("utf-8"))
 
     def get_fundamentals(self, isin):
+        """todo"""
         params = {'isin': isin}
         response = requests.get(f"{self.base_url}/rest/companies/fundamentals", params=params)
         return json.loads(response.content.decode("utf-8"))
 
-    def execute_order(self, order):
-        response = requests.post(
-            url=f"{self.base_url}/rest/public/v2/equity/order",
-            headers=self.headers,
-            data=order.to_json(),
-        )
-        return json.loads(response.content.decode("utf-8"))
-
-    def execute_value_order(self, order: ValueOrder):
-        response = requests.post(
-            url=f"{self.base_url}/rest/v1/equity/value-order",
-            headers=self.headers,
-            data=order.to_json(),
-        )
-        return json.loads(response.content.decode("utf-8"))
-
-    def cancel_order(self, order_id):
-        response = requests.delete(
-            url=f"{self.base_url}/rest/public/v2/equity/order/{order_id}",
-            headers=self.headers,
-        )
-        return json.loads(response.content.decode("utf-8"))
-
-    def get_portfolio_performance(self, time_period: Period):
-        if not isinstance(time_period, Period):
-            return Exception("Invalid Time Period")
+    def get_portfolio_performance(self, time_period: constants.Period):
+        """todo"""
         response = requests.get(
             url=f"{self.base_url}/rest/v2/portfolio?period={time_period}",
             headers=self.headers,
@@ -217,13 +203,14 @@ class Trading212:
 
     def get_companies(self):
         response = requests.get(
-            url=f"{self.base_url}/rest/companies", headers=self.headers
+            url=f"{self.base_url}/rest/companies",
+            headers=self.headers
         )
         return json.loads(response.content.decode("utf-8"))
 
-    def max_sell_quantity(self, order_id):
+    def max_sell_quantity(self, instrument_code: str):
         response = requests.get(
-            f"{self.base_url}/rest/v1/equity/value-order/min-max?instrumentCode={order_id}", headers=self.headers
+            f"{self.base_url}/rest/v1/equity/value-order/min-max?instrumentCode={instrument_code}", headers=self.headers
         )
         return json.loads(response.content.decode("utf-8"))
 
@@ -241,14 +228,57 @@ class Trading212:
         return json.loads(response.content.decode("utf-8"))
 
 
-# Experimental
+class Equity(Trading212):
+    """todo"""
+
+    def __init__(self, email: str, password: str, driver: webdriver, mode: constants.Mode = constants.Mode.DEMO):
+        super().__init__(email, password, driver, mode, constants.Trading.EQUITY)
+
+    def review_order(self, order: EquityOrder):
+        """todo"""
+        # Check if it is a 'value' order or a 'quantity' order
+        if hasattr(order, 'value'):
+            url = f"{self.base_url}/rest/v1/equity/value-order/review"
+        else:
+            url = f"{self.base_url}/rest/public/added-costs"
+        response = requests.post(
+            url=url,
+            headers=self.headers,
+            data=order.to_json(),
+        )
+        return json.loads(response.content.decode("utf-8"))
+
+    def execute_order(self, order: EquityOrder):
+        """todo"""
+        # Check if it is a 'value' order or a 'quantity' order
+        if hasattr(order, 'value'):
+            url = f"{self.base_url}/rest/v1/equity/value-order"
+        else:
+            url = f"{self.base_url}/rest/public/v2/equity/order"
+        response = requests.post(
+            url=url,
+            headers=self.headers,
+            data=order.to_json(),
+        )
+        return json.loads(response.content.decode("utf-8"))
+
+    def cancel_order(self, order_id):
+        """todo"""
+        response = requests.delete(
+            url=f"{self.base_url}/rest/public/v2/equity/order/{order_id}",
+            headers=self.headers,
+        )
+        return json.loads(response.content.decode("utf-8"))
+
+
 class CFD(Trading212):
     """ Experimental CFD support"""
 
-    def __init__(self, username: str, password: str, driver: webdriver, mode: Mode = Mode.DEMO):
-        super().__init__(username, password, driver, mode, Trading.CFD)
+    def __init__(self, email: str, password: str, driver: webdriver, mode: constants.Mode = constants.Mode.DEMO):
+        super().__init__(email, password, driver, mode, constants.Trading.CFD)
 
-    def execute_order(self, order):
+    def execute_order(self, order: CFDOrder):
+        """https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/AAPL"""
         """Execute CFD market order, stop loss and take profit not yet supported"""
         response = requests.post(
             url=f"{self.base_url}/rest/v2/trading/open-positions",
@@ -265,6 +295,25 @@ class CFD(Trading212):
         )
         return json.loads(response.content.decode("utf-8"))
 
+    """{instrumentCode: "AAPL", targetPrice: 159.85, limitDistance: null, stopDistance: null, quantity: 1.5,…}
+instrumentCode
+: 
+"AAPL"
+limitDistance
+: 
+null
+notify
+: 
+"NONE"
+quantity
+: 
+1.5
+stopDistance
+: 
+null
+targetPrice
+: 
+159.85"""
     # response = requests.post(https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/EURUSD)
     # {"notify": "NONE", "order1": {"price": 232, "quantity": -70}, "order2": {"price": 231.3, "quantity": -70}}
     # https://demo.trading212.com/rest/v2/pending-orders/entry-oco/VOW3

@@ -15,12 +15,12 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     dependencies=[
         'selenium',
-        'webdriver-manager',
-        'requests'
+        'requests',
+        'rich',
     ],
     classifiers=[
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.9",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.9',
 )

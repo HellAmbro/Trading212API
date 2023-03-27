@@ -2,7 +2,8 @@
 from enum import Enum
 
 LOGIN_URL = "https://www.trading212.com/en/login"
-COOKIES_NOTICE_BUTTON = "'CookiesNotice_button__q5YaL'"
+COOKIES_NOTICE_BUTTON = "CookiesNotice_button__q5YaL"
+LOGIN_BUTTON = "SubmitButton_input__IV2dl"
 
 
 class Mode(Enum):

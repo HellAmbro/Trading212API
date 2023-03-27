@@ -1,29 +1,35 @@
-from pytrading212 import constants
+from pytrading212 import constants, utils
 
 
-class Order:
-    def __init__(self, instrument_code):
-        self.instrumentCode = instrument_code
+class EquityOrder:
+    """Base Equity Oder"""
+
+    def __init__(self, instrument_code: str,
+                 order_type: constants.OrderType,
+                 **kwargs):
+        self.instrument_code = instrument_code
+        self.order_type = order_type.name
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     def to_json(self):
-        # replace ' with " for Trading212 compatibility
-        return self.__dict__.__str__().replace("'", '"')
+        out = self.__dict__  # Convert order in dictionary
+        # Replace ' with " for Trading212 compatibility
+        return dict((utils.to_camel_case(key), value) for (key, value) in out.items()).__str__().replace("'", '"')
 
 
-""" EQUITY """
+class MarketOrder(EquityOrder):
+    """Market Order Wrapper."""
+
+    def __init__(self, instrument_code: str, quantity: float):
+        super().__init__(instrument_code=instrument_code,
+                         order_type=constants.OrderType.MARKET,
+                         quantity=quantity)
 
 
-class MarketOrder(Order):
-    """Market Order: buy or sell a security at the best available price"""
-
-    def __init__(self, instrument_code, quantity):
-        super().__init__(instrument_code)
-        self.quantity = quantity
-        self.orderType = "MARKET"
-
-
-class LimitOrder(Order):
-    """Limit Order: purchase or sell a security at a specified price or better."""
+class LimitOrder(EquityOrder):
+    """Limit Order Wrapper."""
 
     def __init__(
             self,
@@ -32,17 +38,15 @@ class LimitOrder(Order):
             limit_price: float,
             time_validity: constants.TimeValidity,
     ):
-        super().__init__(
-            instrument_code,
-        )
-        self.quantity = quantity
-        self.limitPrice = limit_price
-        self.orderType = constants.OrderType.LIMIT
-        self.timeValidity = time_validity.name
+        super().__init__(instrument_code=instrument_code,
+                         order_type=constants.OrderType.LIMIT,
+                         quantity=quantity,
+                         limit_price=limit_price,
+                         time_validity=time_validity.name)
 
 
-class StopOrder(Order):
-    """Stop Order: buy or sell a security when its price moves past a particular point"""
+class StopOrder(EquityOrder):
+    """Stop Order Wrapper."""
 
     def __init__(
             self,
@@ -51,15 +55,15 @@ class StopOrder(Order):
             stop_price: float,
             time_validity: constants.TimeValidity,
     ):
-        super().__init__(instrument_code)
-        self.quantity = quantity
-        self.stopPrice = stop_price
-        self.orderType = constants.OrderType.STOP
-        self.timeValidity = time_validity.name
+        super().__init__(instrument_code=instrument_code, order_type=constants.OrderType.STOP,
+                         quantity=quantity,
+                         stop_price=stop_price,
+                         time_validity=time_validity.name
+                         )
 
 
-class StopLimitOrder(Order):
-    """Stop/Limit Order: buy or sell a stock that combines the features of a stop order and a limit order"""
+class StopLimitOrder(EquityOrder):
+    """Stop/Limit Order Wrapper."""
 
     def __init__(
             self,
@@ -69,69 +73,41 @@ class StopLimitOrder(Order):
             stop_price: float,
             time_validity: constants.TimeValidity,
     ):
+        super().__init__(instrument_code=instrument_code,
+                         order_type=constants.OrderType.STOP_LIMIT, quantity=quantity, limit_price=limit_price,
+                         stop_price=stop_price, time_validity=time_validity.name
+                         )
+
+
+class ValueOrder(EquityOrder):
+    """Value Order Wrapper."""
+
+    def __init__(self, instrument_code: str, value: float):
+        super().__init__(instrument_code=instrument_code,
+                         order_type=constants.OrderType.MARKET,
+                         value=value)
+
+
+class CFDOrder:
+    """Base CFD Oder"""
+
+    def __init__(self, instrument_code: str, **kwargs):
+        self.instrument_code = instrument_code
+        self.nofity = "NONE"
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    def to_json(self):
+        out = self.__dict__  # Convert order in dictionary
+        # Replace ' with " for Trading212 compatibility
+        return dict((utils.to_camel_case(key), value) for (key, value) in out.items()).__str__().replace("'", '"')
+
+
+class CFDMarketOrder(CFDOrder):
+    def __init__(self, instrument_code: str, target_price: float, quantity: float):
         super().__init__(instrument_code)
-        self.quantity = quantity
-        self.limitPrice = limit_price
-        self.stopPrice = stop_price
-        self.orderType = constants.OrderType.STOP_LIMIT
-        self.timeValidity = time_validity.name
 
-
-class EquityOrder(Order):
-    """Create a generic order, limit, stop_limit, market, stop"""
-
-    def __init__(
-            self,
-            instrument_code,
-            quantity,
-            limit_price,
-            stop_price,
-            time_validity: constants.TimeValidity
-    ):
-        super().__init__(instrument_code)
-
-        # todo validate data, stop < limit etc...
-        # Data Validation
-
-        # Notice: camelCase for Trading212 json format
-        self.instrumentCode = instrument_code
-        self.quantity = quantity
-
-        if stop_price and limit_price:
-            self.limitPrice = limit_price
-            self.stopPrice = stop_price
-            self.orderType = constants.OrderType.STOP_LIMIT
-            self.timeValidity = time_validity.name
-        elif limit_price:
-            self.limitPrice = limit_price
-            self.orderType = constants.OrderType.LIMIT
-            self.timeValidity = time_validity.name
-        elif stop_price:
-            self.stopPrice = stop_price
-            self.orderType = constants.OrderType.STOP
-            self.timeValidity = time_validity.name
-        else:
-            self.orderType = constants.OrderType.MARKET
-
-
-class ValueOrder(Order):
-    """Buy a stock by value, ex. 100$,1000$"""
-
-    def __init__(self, instrument_code, value):
-        super().__init__(instrument_code)
-        # Notice: camelCase for Trading212 json format
-        self.instrumentCode = instrument_code
-        self.value = value
-        self.orderType = constants.OrderType.MARKET
-
-
-"""CFD"""
-
-
-class CFDMarketOrder(Order):
-    def __init__(self, instrument_code, target_price, quantity):
-        super().__init__(instrument_code)
-        self.notify = "NONE"  # required by Trading212
+        # required by Trading212
         # todo: try to fix this
         # fixme: IMPORTANT! SINCE I'M NOT ABLE TO GET TARGET PRICE FROM TRADING212
         #  TO EXECUTE MARKET ORDERS
@@ -142,5 +118,22 @@ class CFDMarketOrder(Order):
         # I WANT TO BUY, I SET target_price to 1000$, THE ORDER IS EXECUTED WITH THE BEST AVAILABLE PRICE, SO 100$,
         # I WANT TO SELL, I SET target_price to 1$, THE ORDER IS EXECUTED WITH THE BEST AVAILABLE PRICE, SO 99$
         # TRY IT YOURSELF IN DEMO MODE!
-        self.targetPrice = target_price
-        self.quantity = quantity
+        super.target_price = target_price
+        super.quantity = quantity
+
+
+class CFDLimitStopOrder(CFDOrder):
+    """todo"""
+
+    def __init__(self,
+                 instrument_code: str,
+                 quantity: float,
+                 target_price: float,
+                 take_profit: float,
+                 stop_loss: float,
+                 ):
+        super().__init__(instrument_code)
+        super.quantity = quantity
+        super.target_price = target_price,
+        super.take_profit = take_profit,
+        super.stop_loss = stop_loss
