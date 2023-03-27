@@ -2,6 +2,8 @@
 
 **Unofficial** API for Trading212 broker.
 
+### Discord Channel
+[Discord](https://discord.gg/PmWemEUA)
 #### CFD are not suppoerted yet (only experimental for now). Investing only.
 
 #### Support project
