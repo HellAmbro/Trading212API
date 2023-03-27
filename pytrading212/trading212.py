@@ -5,11 +5,9 @@
 import json
 import logging
 from datetime import datetime
-from enum import Enum
 from time import strftime
 from urllib.parse import urlencode
 
-import pytz
 import requests
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
@@ -17,31 +15,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
+from pytrading212 import constants
+from pytrading212.constants import Mode, Trading, Period
 from pytrading212.order import ValueOrder
 from pytrading212.position import Position
-
-
-class Mode(Enum):
-    DEMO = "demo",
-    LIVE = "live"
-
-
-class Trading(Enum):
-    CFD = 0,
-    EQUITY = 1,
-
-
-class Period(Enum):
-    LAST_DAY = 0,
-    LAST_WEEK = 1,
-    LAST_MONTH = 2,
-    LAST_THREE_MONTHS = 3,
-    LAST_YEAR = 4,
-    ALL = 5,
-
-
-class InstrumentCodeNotFound(Exception):
-    pass
 
 
 class Trading212:
@@ -57,10 +34,10 @@ class Trading212:
         self.base_url = f"https://{mode.name.lower()}.trading212.com"
 
         self.driver = driver
-        self.driver.get("https://www.trading212.com/en/login")
+        self.driver.get(constants.LOGIN_URL)
 
         # Click Accept all cookies
-        self.driver.find_element(By.CLASS_NAME, 'CookiesNotice_button__q5YaL').click()
+        self.driver.find_element(By.CLASS_NAME, constants.COOKIES_NOTICE_BUTTON).click()
 
         # Authenticate
         self.driver.find_element(By.NAME, "email").send_keys(username)
@@ -95,7 +72,7 @@ class Trading212:
         elif trading == Trading.CFD and self.is_equity:
             self.switch()
 
-        # get session cookie
+        # Get session cookie
         cookies = self.driver.get_cookies()
         if cookies is not None:
             for cookie in cookies:
@@ -113,7 +90,6 @@ class Trading212:
             "Cookie": self.cookie,
         }
 
-    # 'with as' support
     def __enter__(self):
         return self
 
@@ -144,8 +120,7 @@ class Trading212:
         )
         return json.loads(response.content.decode("utf-8"))
 
-    # todo document
-    def get_orders(self, older_than: datetime = None, newer_than: datetime = None):
+    def get_orders(self, older_than: datetime, newer_than: datetime):
         params = {'olderThan': strftime(older_than.isoformat()),
                   'newerThan': strftime(newer_than.isoformat())
                   }
@@ -155,7 +130,7 @@ class Trading212:
         )
         return json.loads(response.content.decode("utf-8"))
 
-    def get_transactions(self, older_than: datetime = None, newer_than: datetime = None):
+    def get_transactions(self, older_than: datetime, newer_than: datetime):
         params = {'olderThan': strftime(older_than.isoformat()),
                   'newerThan': strftime(newer_than.isoformat())
                   }
@@ -169,7 +144,7 @@ class Trading212:
         response = requests.get(f"{self.base_url}/rest/history{details_path}", headers=self.headers)
         return json.loads(response.content.decode("utf-8"))
 
-    def get_dividends(self, older_than: datetime = None, newer_than: datetime = None):
+    def get_dividends(self, older_than: datetime, newer_than: datetime):
         params = {'olderThan': strftime(older_than.isoformat()),
                   'newerThan': strftime(newer_than.isoformat())
                   }
@@ -207,9 +182,11 @@ class Trading212:
         )
         return json.loads(response.content.decode("utf-8"))
 
-    def get_portfolio_performance(self, time_period=Period.LAST_DAY):
+    def get_portfolio_performance(self, time_period: Period):
+        if not isinstance(time_period, Period):
+            return Exception("Invalid Time Period")
         response = requests.get(
-            url=f"{self.base_url}/rest/v2/portfolio?period={time_period.name}",
+            url=f"{self.base_url}/rest/v2/portfolio?period={time_period}",
             headers=self.headers,
         )
         return json.loads(response.content.decode("utf-8"))
@@ -264,7 +241,7 @@ class Trading212:
         return json.loads(response.content.decode("utf-8"))
 
 
-# Experimental class
+# Experimental
 class CFD(Trading212):
     """ Experimental CFD support"""
 
@@ -287,6 +264,7 @@ class CFD(Trading212):
             headers=self.headers,
         )
         return json.loads(response.content.decode("utf-8"))
+
     # response = requests.post(https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/EURUSD)
     # {"notify": "NONE", "order1": {"price": 232, "quantity": -70}, "order2": {"price": 231.3, "quantity": -70}}
     # https://demo.trading212.com/rest/v2/pending-orders/entry-oco/VOW3
