@@ -1,6 +1,12 @@
-# Trading212 API
+<div align="center">
 
-**Unofficial** API for Trading212 broker.
+# PyTrading212
+
+## :warning: This version will become deprecated soon, new API version is coming:rocket:, look at the `dev` branch for the latest news and updates. :warning:
+
+</div>
+
+### **Unofficial** API for Trading212 broker.
 
 ### Discord Channel
 [Discord](https://discord.gg/PmWemEUA)
