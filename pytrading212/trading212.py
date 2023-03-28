@@ -207,18 +207,13 @@ class Trading212:
             logging.error(e)  # portfolio is empty
         return positions
 
-    def get_companies(self) -> List[Company]:
+    def get_companies(self):
         """Get Ticker of all Trading212 tradable companies"""
         response = requests.get(
             url=f"{self.base_url}/rest/companies",
             headers=self.headers
         )
-        companies = []
-        json_response = json.loads(response.content.decode("utf-8"))
-        for json_company in json_response:
-            companies.append(Company(instrument_code=json_company.get("ticker"),
-                                     isin=json_company.get("isin")))
-        return companies
+        return json.loads(response.content.decode("utf-8"))
 
     def max_sell_quantity(self, instrument_code: str):
         response = requests.get(
@@ -286,10 +281,13 @@ class Equity(Trading212):
 
     def check_order(self, equity_order: EquityOrder) -> [bool, str]:
         """Check if Order is valid."""
-        if equity_order.instrument_code not in self.get_companies():
-            return False, f"Instrument Code {equity_order.instrument_code} is not a valid Trading212 Ticker"
+        is_valid_ticker = False, f"Instrument Code {equity_order.instrument_code} is not a valid Trading212 Ticker"
+        for company in self.get_companies():
+            if company['ticker'] == equity_order.instrument_code:
+                is_valid_ticker = True, f"Instrument Code {equity_order.instrument_code} is valid Trading212 Ticker"
+        return is_valid_ticker
 
-        #todo add more useful checks
+        # todo add more useful checks
 
 
 class CFD(Trading212):

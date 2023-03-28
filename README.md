@@ -1,20 +1,60 @@
 <div align="center">
 
 # PyTrading212 API
+
 ### Unofficial API for Trading212
+
+### [Documentation](https://hellambro.github.io/Trading212API/)
 
 </div>
 
 <div align="left">
 
-
 ## Installation
+
 ```bash
 pip install pytrading212
 ```
+
 ### Example PyTrading212 Usage
-````
-````
+
+```
+
+```
+
+## Documentation
+
+### Structure
+
+![order](docs/imgs/order_structure.png)
+
+### [Equity Order](https://hellambro.github.io/Trading212API/order.html#pytrading212.order.EquityOrder)
+
+It's possible to create **equity orders** directly from `EquityOrder` class
+
+```python
+order = EquityOrder(instrument_code="AAPL_US_EQ", order_type=OrderType.MARKET, quantity=1)
+```
+or alternatively
+```python
+market_order = MarketOrder(instrument_code="AAPL_US_EQ", quantity=1)
+```
+
+These two orders are equivalent, you can use both ways indifferently.
+
+All other **equity order classes** are wrappers of the `EquityOrder`
+
+
+#### Wrappers for equity orders
+
+- MarketOrder
+- LimitOrder
+- StopOrder
+- StopLimitOrder
+- ValueOrder
+
+These classes allow to simplify the creation of orders, avoiding errors for omitted parameters,
+improving code readability, as the order type is specified.
 
 ### Useful resources
 

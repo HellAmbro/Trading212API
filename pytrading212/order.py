@@ -1,7 +1,16 @@
 from pytrading212 import constants, utils
 
 
-class EquityOrder:
+class Order:
+    """Base Order"""
+
+    def to_json(self):
+        out = self.__dict__  # Convert order in dictionary
+        # Replace ' with " for Trading212 compatibility
+        return dict((utils.to_camel_case(key), value) for (key, value) in out.items()).__str__().replace("'", '"')
+
+
+class EquityOrder(Order):
     """Base Equity Oder"""
 
     def __init__(self,
@@ -16,11 +25,6 @@ class EquityOrder:
 
         if not (hasattr(self, 'quantity') or hasattr(self, 'value')):
             raise Exception("'value' or 'quantity' must be be provided.")
-
-    def to_json(self):
-        out = self.__dict__  # Convert order in dictionary
-        # Replace ' with " for Trading212 compatibility
-        return dict((utils.to_camel_case(key), value) for (key, value) in out.items()).__str__().replace("'", '"')
 
 
 class MarketOrder(EquityOrder):
@@ -92,19 +96,15 @@ class ValueOrder(EquityOrder):
                          value=value)
 
 
-class CFDOrder:
+class CFDOrder(Order):
     """Base CFD Oder"""
 
     def __init__(self, instrument_code: str, **kwargs):
         self.instrument_code = instrument_code
-        self.nofity = "NONE"
+        self.notify = "NONE"
+
         for key, value in kwargs.items():
             setattr(self, key, value)
-
-    def to_json(self):
-        out = self.__dict__  # Convert order in dictionary
-        # Replace ' with " for Trading212 compatibility
-        return dict((utils.to_camel_case(key), value) for (key, value) in out.items()).__str__().replace("'", '"')
 
 
 class CFDMarketOrder(CFDOrder):
