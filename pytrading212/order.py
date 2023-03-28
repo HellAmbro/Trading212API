@@ -4,7 +4,8 @@ from pytrading212 import constants, utils
 class EquityOrder:
     """Base Equity Oder"""
 
-    def __init__(self, instrument_code: str,
+    def __init__(self,
+                 instrument_code: str,
                  order_type: constants.OrderType,
                  **kwargs):
         self.instrument_code = instrument_code
@@ -12,6 +13,9 @@ class EquityOrder:
 
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+        if not (hasattr(self, 'quantity') or hasattr(self, 'value')):
+            raise Exception("'value' or 'quantity' must be be provided.")
 
     def to_json(self):
         out = self.__dict__  # Convert order in dictionary

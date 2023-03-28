@@ -1,3 +1,5 @@
+### v0.3.0
+    * New API Version
 ### v0.2.4
     * Updated login and cookies button class
 ### v0.2.3

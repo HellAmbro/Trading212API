@@ -1,0 +1,1263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>pytrading212.trading212 API documentation</title>
+<meta name="description" content="API for Trading212 Platform" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pytrading212.trading212</code></h1>
+</header>
+<section id="section-intro">
+<p>API for Trading212 Platform</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;API for Trading212 Platform&#34;&#34;&#34;
+
+import json
+import logging
+from datetime import datetime
+from time import strftime
+from typing import List
+from urllib.parse import urlencode
+
+import requests
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.ui import WebDriverWait
+
+from pytrading212 import constants, console
+from pytrading212.company import Company
+from pytrading212.order import CFDOrder, EquityOrder
+from pytrading212.position import Position
+
+
+class Trading212:
+    def __init__(
+            self,
+            email: str,
+            password: str,
+            driver: webdriver,
+            mode: constants.Mode = constants.Mode.DEMO,
+            trading: constants.Trading = constants.Trading.EQUITY,
+    ):
+        self.session = f&#34;TRADING212_SESSION_{mode.name}&#34;
+        self.base_url = f&#34;https://{mode.name.lower()}.trading212.com&#34;
+
+        console.log(f&#34;Starting PyTrading212 in [green]{mode.name}[/green] Mode&#34;)
+
+        self.driver = driver
+        self.driver.get(constants.LOGIN_URL)
+        # Click Accept all cookies if it appears
+        try:
+            self.driver.find_element(By.CLASS_NAME, constants.COOKIES_NOTICE_BUTTON).click()
+        except NoSuchElementException:
+            pass  # ignore
+        console.log(&#34;Authenticating&#34;)
+
+        # Authenticate
+        self.driver.find_element(By.NAME, &#34;email&#34;).send_keys(email)
+        self.driver.find_element(By.NAME, &#34;password&#34;).send_keys(password)
+
+        # Click login button
+        self.driver.find_element(By.CLASS_NAME, constants.LOGIN_BUTTON).click()
+
+        # wait until the site is fully loaded
+        condition = expected_conditions.visibility_of_element_located(
+            (By.CLASS_NAME, &#34;company-logo&#34;)
+        )
+
+        # 120 seconds is a lot, but the site sometimes is very slow
+        WebDriverWait(self.driver, 120).until(condition)
+
+        self.user_agent = self.driver.execute_script(&#34;return navigator.userAgent;&#34;)
+
+        # Redirect to correct mode, DEMO or LIVE
+        if mode.name not in self.driver.current_url:
+            self.driver.get(self.base_url)
+
+        # Switch between CFD or Equity
+        try:
+            self.driver.find_element(By.CLASS_NAME, &#34;equity&#34;)
+            self.is_equity = True
+        except NoSuchElementException:
+            self.is_equity = False
+
+        if trading == constants.Trading.EQUITY and not self.is_equity:
+            self.switch()
+        elif trading == constants.Trading.CFD and self.is_equity:
+            self.switch()
+
+        # Get session cookie
+        cookies = self.driver.get_cookies()
+        if cookies is not None:
+            for cookie in cookies:
+                # Get appropriate cookie for this session, live or demo
+                if self.session in cookie[&#39;name&#39;]:
+                    self.cookie = f&#34;{self.session}={cookie[&#39;value&#39;]};&#34;
+        else:
+            raise Exception(&#34;Unable to get cookies, aborting.&#34;)
+
+        # necessary headers for requests
+        self.headers = {
+            &#34;Accept&#34;: &#34;application/json&#34;,
+            &#34;Content-Type&#34;: &#34;application/json&#34;,
+            &#34;User-Agent&#34;: self.user_agent,
+            &#34;Cookie&#34;: self.cookie,
+        }
+
+        self.companies = self.get_companies()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.finish()
+
+    def finish(self):
+        self.driver.close()
+
+    def switch(self):
+        &#34;&#34;&#34;Switch between CFD or Equity to get the right cookie&#34;&#34;&#34;
+        headers = {
+            &#34;Accept&#34;: &#34;application/json&#34;,
+            &#34;Content-Type&#34;: &#34;application/json&#34;,
+            &#34;User-Agent&#34;: self.user_agent,
+            &#34;Cookie&#34;: f&#34;{self.driver.get_cookies()}&#34;,
+        }
+        requests.post(f&#34;{self.base_url}/rest/v1/account/switch&#34;, headers=headers)
+
+    def last_hour_hotlist(self):
+        &#34;&#34;&#34;Trading 212 last hour hotlist&#34;&#34;&#34;
+        response = requests.get(
+            f&#34;{self.base_url}/trading212.com/rest/positions-tracker/deltas/hourly/1&#34;
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_funds(self):
+        &#34;&#34;&#34;Get your funds, free, available.&#34;&#34;&#34;
+        response = requests.get(
+            f&#34;{self.base_url}/rest/customer/accounts/funds&#34;, headers=self.headers
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_orders(self, older_than: datetime, newer_than: datetime):
+        &#34;&#34;&#34;Get orders within a range of dates&#34;&#34;&#34;
+        params = {
+            &#39;olderThan&#39;: strftime(older_than.isoformat()),
+            &#39;newerThan&#39;: strftime(newer_than.isoformat())
+        }
+
+        response = requests.get(
+            f&#34;{self.base_url}/rest/history/orders&#34;, headers=self.headers, params=urlencode(params)
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_transactions(self, older_than: datetime, newer_than: datetime):
+        &#34;&#34;&#34;Get transactions within a range of dates&#34;&#34;&#34;
+        params = {
+            &#39;olderThan&#39;: strftime(older_than.isoformat()),
+            &#39;newerThan&#39;: strftime(newer_than.isoformat())
+        }
+        response = requests.get(
+            f&#34;{self.base_url}/rest/history/transactions&#34;, headers=self.headers, params=urlencode(params)
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_order_details(self, details_path):
+        &#34;&#34;&#34;Get Order Details&#34;&#34;&#34;
+        response = requests.get(f&#34;{self.base_url}/rest/history{details_path}&#34;, headers=self.headers)
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_dividends(self, older_than: datetime, newer_than: datetime):
+        &#34;&#34;&#34;Get dividends within a range of dates&#34;&#34;&#34;
+        params = {&#39;olderThan&#39;: strftime(older_than.isoformat()),
+                  &#39;newerThan&#39;: strftime(newer_than.isoformat())
+                  }
+
+        response = requests.get(
+            f&#34;{self.base_url}/rest/history/dividends&#34;, headers=self.headers, params=urlencode(params)
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_fundamentals(self, isin):
+        &#34;&#34;&#34;Get fundamentals of a company by its isin&#34;&#34;&#34;
+        params = {&#39;isin&#39;: isin}
+        response = requests.get(f&#34;{self.base_url}/rest/companies/fundamentals&#34;, params=params)
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_portfolio_performance(self, time_period: constants.Period):
+        &#34;&#34;&#34;Get Portfolio Performance&#34;&#34;&#34;
+        response = requests.get(
+            url=f&#34;{self.base_url}/rest/v2/portfolio?period={time_period}&#34;,
+            headers=self.headers,
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_portfolio_composition(self):
+        &#34;&#34;&#34;Get Portfolio Composition&#34;&#34;&#34;
+        # click portfolio section on right-sidepanel
+        right_sidepanel_portfolio_class = &#39;portfolio-icon&#39;
+        condition = expected_conditions.visibility_of_element_located(
+            (By.CLASS_NAME, right_sidepanel_portfolio_class)
+        )
+        WebDriverWait(self.driver, 30).until(condition)
+        self.driver.find_element(By.CLASS_NAME, right_sidepanel_portfolio_class).click()
+
+        positions = []
+        try:
+            # click on investments
+            self.driver.find_element(By.CLASS_NAME, &#39;investment-tab&#39;).click()
+            for item in self.driver.find_elements(By.CLASS_NAME, &#34;investment-item&#34;):
+                ticker = item.get_attribute(&#34;data-qa-item&#34;)
+                value = item.find_element(By.CLASS_NAME, &#34;total-value&#34;).text
+                quantity = item.find_element(By.CLASS_NAME, &#34;quantity&#34;).text
+                total_return = item.find_element(By.CLASS_NAME, &#34;return&#34;).text
+                position = Position(ticker, value, quantity, total_return)
+                positions.append(position.__dict__)
+        except Exception as e:
+            logging.error(e)  # portfolio is empty
+        return positions
+
+    def get_companies(self) -&gt; List[Company]:
+        &#34;&#34;&#34;Get Ticker of all Trading212 tradable companies&#34;&#34;&#34;
+        response = requests.get(
+            url=f&#34;{self.base_url}/rest/companies&#34;,
+            headers=self.headers
+        )
+        companies = []
+        json_response = json.loads(response.content.decode(&#34;utf-8&#34;))
+        for json_company in json_response:
+            companies.append(Company(instrument_code=json_company.get(&#34;ticker&#34;),
+                                     isin=json_company.get(&#34;isin&#34;)))
+        return companies
+
+    def max_sell_quantity(self, instrument_code: str):
+        response = requests.get(
+            f&#34;{self.base_url}/rest/v1/equity/value-order/min-max?instrumentCode={instrument_code}&#34;, headers=self.headers
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def search(self, query):
+        &#34;&#34;&#34;Search a company&#34;&#34;&#34;
+        found = []
+        companies = self.get_companies()
+        for company in companies:
+            if query in company[&#34;ticker&#34;]:
+                found.append(company[&#34;ticker&#34;])
+
+        response = requests.post(
+            f&#34;{self.base_url}/charting/prices?withFakes=false&#34;,
+            headers=self.headers,
+            data=found.__str__().replace(&#34;&#39;&#34;, &#39;&#34;&#39;),
+        )  # &#39; with &#34; for Trading212 compatibility
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+
+class Equity(Trading212):
+    &#34;&#34;&#34;Trading 212 Equity&#34;&#34;&#34;
+
+    def __init__(self, email: str, password: str, driver: webdriver, mode: constants.Mode = constants.Mode.DEMO):
+        super().__init__(email, password, driver, mode, constants.Trading.EQUITY)
+
+    def review_order(self, order: EquityOrder):
+        &#34;&#34;&#34;Preview of the order, with added costs and other useful data&#34;&#34;&#34;
+        # Check if it is a &#39;value&#39; order or a &#39;quantity&#39; order
+        if hasattr(order, &#39;value&#39;):
+            url = f&#34;{self.base_url}/rest/v1/equity/value-order/review&#34;
+        else:
+            url = f&#34;{self.base_url}/rest/public/added-costs&#34;
+        response = requests.post(
+            url=url,
+            headers=self.headers,
+            data=order.to_json(),
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def execute_order(self, order: EquityOrder):
+        &#34;&#34;&#34;Execute equity order&#34;&#34;&#34;
+        # Check if it is a &#39;value&#39; order or a &#39;quantity&#39; order
+        if hasattr(order, &#39;value&#39;):
+            url = f&#34;{self.base_url}/rest/v1/equity/value-order&#34;
+        else:
+            url = f&#34;{self.base_url}/rest/public/v2/equity/order&#34;
+        response = requests.post(
+            url=url,
+            headers=self.headers,
+            data=order.to_json(),
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def cancel_order(self, order_id):
+        &#34;&#34;&#34;Cancel a pending order&#34;&#34;&#34;
+        response = requests.delete(
+            url=f&#34;{self.base_url}/rest/public/v2/equity/order/{order_id}&#34;,
+            headers=self.headers,
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def check_order(self, equity_order: EquityOrder) -&gt; [bool, str]:
+        &#34;&#34;&#34;Check if Order is valid.&#34;&#34;&#34;
+        if equity_order.instrument_code not in self.get_companies():
+            return False, f&#34;Instrument Code {equity_order.instrument_code} is not a valid Trading212 Ticker&#34;
+
+        #todo add more useful checks
+
+
+class CFD(Trading212):
+    &#34;&#34;&#34; Trading 212 CFD &#34;&#34;&#34;
+
+    def __init__(self, email: str, password: str, driver: webdriver, mode: constants.Mode = constants.Mode.DEMO):
+        super().__init__(email, password, driver, mode, constants.Trading.CFD)
+
+    def execute_order(self, order: CFDOrder):
+        &#34;&#34;&#34;https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/AAPL&#34;&#34;&#34;
+        &#34;&#34;&#34;Execute CFD market order, stop loss and take profit not yet supported&#34;&#34;&#34;
+        response = requests.post(
+            url=f&#34;{self.base_url}/rest/v2/trading/open-positions&#34;,
+            headers=self.headers,
+            data=order.to_json(),
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def close_position(self, position_id):
+        &#34;&#34;&#34;Close an open position.&#34;&#34;&#34;
+        response = requests.delete(
+            url=f&#34;{self.base_url}/rest/v2/trading/open-positions/close/{position_id}&#34;,
+            headers=self.headers,
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    &#34;&#34;&#34;{instrumentCode: &#34;AAPL&#34;, targetPrice: 159.85, limitDistance: null, stopDistance: null, quantity: 1.5,…}
+instrumentCode
+: 
+&#34;AAPL&#34;
+limitDistance
+: 
+null
+notify
+: 
+&#34;NONE&#34;
+quantity
+: 
+1.5
+stopDistance
+: 
+null
+targetPrice
+: 
+159.85&#34;&#34;&#34;
+    # response = requests.post(https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/EURUSD)
+    # {&#34;notify&#34;: &#34;NONE&#34;, &#34;order1&#34;: {&#34;price&#34;: 232, &#34;quantity&#34;: -70}, &#34;order2&#34;: {&#34;price&#34;: 231.3, &#34;quantity&#34;: -70}}
+    # https://demo.trading212.com/rest/v2/pending-orders/entry-oco/VOW3
+    # {&#34;notify&#34;:&#34;NONE&#34;,&#34;targetPrice&#34;:234.07,&#34;takeProfit&#34;:null,&#34;stopLoss&#34;:null,&#34;quantity&#34;:1}
+    # https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/VOW3
+    # {&#34;notify&#34;: &#34;NONE&#34;, &#34;targetPrice&#34;: 234.32, &#34;quantity&#34;: 2, &#34;instrumentCode&#34;: &#34;VOW3&#34;}
+    # {&#34;notify&#34;:&#34;NONE&#34;,&#34;targetPrice&#34;:218.07,&#34;limitDistance&#34;:6.85,&#34;stopDistance&#34;:3.05,&#34;quantity&#34;:1,&#34;instrumentCode&#34;:&#34;BIDU&#34;}
+    # def open_position(self):
+    #    response = requests.post(&#39;https://demo.trading212.com/rest/v2/trading/open-positions&#39;, headers=headers)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pytrading212.trading212.CFD"><code class="flex name class">
+<span>class <span class="ident">CFD</span></span>
+<span>(</span><span>email: str, password: str, driver: <module 'selenium.webdriver' from 'C:\\Users\\framb\\PycharmProjects\\Trading212API\\venv\\Lib\\site-packages\\selenium\\webdriver\\__init__.py'>, mode: <a title="pytrading212.constants.Mode" href="constants.html#pytrading212.constants.Mode">Mode</a> = Mode.DEMO)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Trading 212 CFD</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CFD(Trading212):
+    &#34;&#34;&#34; Trading 212 CFD &#34;&#34;&#34;
+
+    def __init__(self, email: str, password: str, driver: webdriver, mode: constants.Mode = constants.Mode.DEMO):
+        super().__init__(email, password, driver, mode, constants.Trading.CFD)
+
+    def execute_order(self, order: CFDOrder):
+        &#34;&#34;&#34;https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/AAPL&#34;&#34;&#34;
+        &#34;&#34;&#34;Execute CFD market order, stop loss and take profit not yet supported&#34;&#34;&#34;
+        response = requests.post(
+            url=f&#34;{self.base_url}/rest/v2/trading/open-positions&#34;,
+            headers=self.headers,
+            data=order.to_json(),
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def close_position(self, position_id):
+        &#34;&#34;&#34;Close an open position.&#34;&#34;&#34;
+        response = requests.delete(
+            url=f&#34;{self.base_url}/rest/v2/trading/open-positions/close/{position_id}&#34;,
+            headers=self.headers,
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    &#34;&#34;&#34;{instrumentCode: &#34;AAPL&#34;, targetPrice: 159.85, limitDistance: null, stopDistance: null, quantity: 1.5,…}
+instrumentCode
+: 
+&#34;AAPL&#34;
+limitDistance
+: 
+null
+notify
+: 
+&#34;NONE&#34;
+quantity
+: 
+1.5
+stopDistance
+: 
+null
+targetPrice
+: 
+159.85&#34;&#34;&#34;
+    # response = requests.post(https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/EURUSD)
+    # {&#34;notify&#34;: &#34;NONE&#34;, &#34;order1&#34;: {&#34;price&#34;: 232, &#34;quantity&#34;: -70}, &#34;order2&#34;: {&#34;price&#34;: 231.3, &#34;quantity&#34;: -70}}
+    # https://demo.trading212.com/rest/v2/pending-orders/entry-oco/VOW3
+    # {&#34;notify&#34;:&#34;NONE&#34;,&#34;targetPrice&#34;:234.07,&#34;takeProfit&#34;:null,&#34;stopLoss&#34;:null,&#34;quantity&#34;:1}
+    # https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/VOW3
+    # {&#34;notify&#34;: &#34;NONE&#34;, &#34;targetPrice&#34;: 234.32, &#34;quantity&#34;: 2, &#34;instrumentCode&#34;: &#34;VOW3&#34;}
+    # {&#34;notify&#34;:&#34;NONE&#34;,&#34;targetPrice&#34;:218.07,&#34;limitDistance&#34;:6.85,&#34;stopDistance&#34;:3.05,&#34;quantity&#34;:1,&#34;instrumentCode&#34;:&#34;BIDU&#34;}
+    # def open_position(self):
+    #    response = requests.post(&#39;https://demo.trading212.com/rest/v2/trading/open-positions&#39;, headers=headers)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pytrading212.trading212.Trading212" href="#pytrading212.trading212.Trading212">Trading212</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pytrading212.trading212.CFD.close_position"><code class="name flex">
+<span>def <span class="ident">close_position</span></span>(<span>self, position_id)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Close an open position.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def close_position(self, position_id):
+    &#34;&#34;&#34;Close an open position.&#34;&#34;&#34;
+    response = requests.delete(
+        url=f&#34;{self.base_url}/rest/v2/trading/open-positions/close/{position_id}&#34;,
+        headers=self.headers,
+    )
+    return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.CFD.execute_order"><code class="name flex">
+<span>def <span class="ident">execute_order</span></span>(<span>self, order: <a title="pytrading212.order.CFDOrder" href="order.html#pytrading212.order.CFDOrder">CFDOrder</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p><a href="https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/AAPL">https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/AAPL</a></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def execute_order(self, order: CFDOrder):
+    &#34;&#34;&#34;https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/AAPL&#34;&#34;&#34;
+    &#34;&#34;&#34;Execute CFD market order, stop loss and take profit not yet supported&#34;&#34;&#34;
+    response = requests.post(
+        url=f&#34;{self.base_url}/rest/v2/trading/open-positions&#34;,
+        headers=self.headers,
+        data=order.to_json(),
+    )
+    return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pytrading212.trading212.Trading212" href="#pytrading212.trading212.Trading212">Trading212</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pytrading212.trading212.Trading212.get_companies" href="#pytrading212.trading212.Trading212.get_companies">get_companies</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_dividends" href="#pytrading212.trading212.Trading212.get_dividends">get_dividends</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_fundamentals" href="#pytrading212.trading212.Trading212.get_fundamentals">get_fundamentals</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_funds" href="#pytrading212.trading212.Trading212.get_funds">get_funds</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_order_details" href="#pytrading212.trading212.Trading212.get_order_details">get_order_details</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_orders" href="#pytrading212.trading212.Trading212.get_orders">get_orders</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_portfolio_composition" href="#pytrading212.trading212.Trading212.get_portfolio_composition">get_portfolio_composition</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_portfolio_performance" href="#pytrading212.trading212.Trading212.get_portfolio_performance">get_portfolio_performance</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_transactions" href="#pytrading212.trading212.Trading212.get_transactions">get_transactions</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.last_hour_hotlist" href="#pytrading212.trading212.Trading212.last_hour_hotlist">last_hour_hotlist</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.search" href="#pytrading212.trading212.Trading212.search">search</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.switch" href="#pytrading212.trading212.Trading212.switch">switch</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pytrading212.trading212.Equity"><code class="flex name class">
+<span>class <span class="ident">Equity</span></span>
+<span>(</span><span>email: str, password: str, driver: <module 'selenium.webdriver' from 'C:\\Users\\framb\\PycharmProjects\\Trading212API\\venv\\Lib\\site-packages\\selenium\\webdriver\\__init__.py'>, mode: <a title="pytrading212.constants.Mode" href="constants.html#pytrading212.constants.Mode">Mode</a> = Mode.DEMO)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Trading 212 Equity</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Equity(Trading212):
+    &#34;&#34;&#34;Trading 212 Equity&#34;&#34;&#34;
+
+    def __init__(self, email: str, password: str, driver: webdriver, mode: constants.Mode = constants.Mode.DEMO):
+        super().__init__(email, password, driver, mode, constants.Trading.EQUITY)
+
+    def review_order(self, order: EquityOrder):
+        &#34;&#34;&#34;Preview of the order, with added costs and other useful data&#34;&#34;&#34;
+        # Check if it is a &#39;value&#39; order or a &#39;quantity&#39; order
+        if hasattr(order, &#39;value&#39;):
+            url = f&#34;{self.base_url}/rest/v1/equity/value-order/review&#34;
+        else:
+            url = f&#34;{self.base_url}/rest/public/added-costs&#34;
+        response = requests.post(
+            url=url,
+            headers=self.headers,
+            data=order.to_json(),
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def execute_order(self, order: EquityOrder):
+        &#34;&#34;&#34;Execute equity order&#34;&#34;&#34;
+        # Check if it is a &#39;value&#39; order or a &#39;quantity&#39; order
+        if hasattr(order, &#39;value&#39;):
+            url = f&#34;{self.base_url}/rest/v1/equity/value-order&#34;
+        else:
+            url = f&#34;{self.base_url}/rest/public/v2/equity/order&#34;
+        response = requests.post(
+            url=url,
+            headers=self.headers,
+            data=order.to_json(),
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def cancel_order(self, order_id):
+        &#34;&#34;&#34;Cancel a pending order&#34;&#34;&#34;
+        response = requests.delete(
+            url=f&#34;{self.base_url}/rest/public/v2/equity/order/{order_id}&#34;,
+            headers=self.headers,
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def check_order(self, equity_order: EquityOrder) -&gt; [bool, str]:
+        &#34;&#34;&#34;Check if Order is valid.&#34;&#34;&#34;
+        if equity_order.instrument_code not in self.get_companies():
+            return False, f&#34;Instrument Code {equity_order.instrument_code} is not a valid Trading212 Ticker&#34;
+
+        #todo add more useful checks</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pytrading212.trading212.Trading212" href="#pytrading212.trading212.Trading212">Trading212</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pytrading212.trading212.Equity.cancel_order"><code class="name flex">
+<span>def <span class="ident">cancel_order</span></span>(<span>self, order_id)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Cancel a pending order</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cancel_order(self, order_id):
+    &#34;&#34;&#34;Cancel a pending order&#34;&#34;&#34;
+    response = requests.delete(
+        url=f&#34;{self.base_url}/rest/public/v2/equity/order/{order_id}&#34;,
+        headers=self.headers,
+    )
+    return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Equity.check_order"><code class="name flex">
+<span>def <span class="ident">check_order</span></span>(<span>self, equity_order: <a title="pytrading212.order.EquityOrder" href="order.html#pytrading212.order.EquityOrder">EquityOrder</a>) ‑> [<class 'bool'>, <class 'str'>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if Order is valid.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_order(self, equity_order: EquityOrder) -&gt; [bool, str]:
+    &#34;&#34;&#34;Check if Order is valid.&#34;&#34;&#34;
+    if equity_order.instrument_code not in self.get_companies():
+        return False, f&#34;Instrument Code {equity_order.instrument_code} is not a valid Trading212 Ticker&#34;
+
+    #todo add more useful checks</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Equity.execute_order"><code class="name flex">
+<span>def <span class="ident">execute_order</span></span>(<span>self, order: <a title="pytrading212.order.EquityOrder" href="order.html#pytrading212.order.EquityOrder">EquityOrder</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Execute equity order</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def execute_order(self, order: EquityOrder):
+    &#34;&#34;&#34;Execute equity order&#34;&#34;&#34;
+    # Check if it is a &#39;value&#39; order or a &#39;quantity&#39; order
+    if hasattr(order, &#39;value&#39;):
+        url = f&#34;{self.base_url}/rest/v1/equity/value-order&#34;
+    else:
+        url = f&#34;{self.base_url}/rest/public/v2/equity/order&#34;
+    response = requests.post(
+        url=url,
+        headers=self.headers,
+        data=order.to_json(),
+    )
+    return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Equity.review_order"><code class="name flex">
+<span>def <span class="ident">review_order</span></span>(<span>self, order: <a title="pytrading212.order.EquityOrder" href="order.html#pytrading212.order.EquityOrder">EquityOrder</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Preview of the order, with added costs and other useful data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def review_order(self, order: EquityOrder):
+    &#34;&#34;&#34;Preview of the order, with added costs and other useful data&#34;&#34;&#34;
+    # Check if it is a &#39;value&#39; order or a &#39;quantity&#39; order
+    if hasattr(order, &#39;value&#39;):
+        url = f&#34;{self.base_url}/rest/v1/equity/value-order/review&#34;
+    else:
+        url = f&#34;{self.base_url}/rest/public/added-costs&#34;
+    response = requests.post(
+        url=url,
+        headers=self.headers,
+        data=order.to_json(),
+    )
+    return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pytrading212.trading212.Trading212" href="#pytrading212.trading212.Trading212">Trading212</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pytrading212.trading212.Trading212.get_companies" href="#pytrading212.trading212.Trading212.get_companies">get_companies</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_dividends" href="#pytrading212.trading212.Trading212.get_dividends">get_dividends</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_fundamentals" href="#pytrading212.trading212.Trading212.get_fundamentals">get_fundamentals</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_funds" href="#pytrading212.trading212.Trading212.get_funds">get_funds</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_order_details" href="#pytrading212.trading212.Trading212.get_order_details">get_order_details</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_orders" href="#pytrading212.trading212.Trading212.get_orders">get_orders</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_portfolio_composition" href="#pytrading212.trading212.Trading212.get_portfolio_composition">get_portfolio_composition</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_portfolio_performance" href="#pytrading212.trading212.Trading212.get_portfolio_performance">get_portfolio_performance</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_transactions" href="#pytrading212.trading212.Trading212.get_transactions">get_transactions</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.last_hour_hotlist" href="#pytrading212.trading212.Trading212.last_hour_hotlist">last_hour_hotlist</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.search" href="#pytrading212.trading212.Trading212.search">search</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.switch" href="#pytrading212.trading212.Trading212.switch">switch</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pytrading212.trading212.Trading212"><code class="flex name class">
+<span>class <span class="ident">Trading212</span></span>
+<span>(</span><span>email: str, password: str, driver: <module 'selenium.webdriver' from 'C:\\Users\\framb\\PycharmProjects\\Trading212API\\venv\\Lib\\site-packages\\selenium\\webdriver\\__init__.py'>, mode: <a title="pytrading212.constants.Mode" href="constants.html#pytrading212.constants.Mode">Mode</a> = Mode.DEMO, trading: <a title="pytrading212.constants.Trading" href="constants.html#pytrading212.constants.Trading">Trading</a> = Trading.EQUITY)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Trading212:
+    def __init__(
+            self,
+            email: str,
+            password: str,
+            driver: webdriver,
+            mode: constants.Mode = constants.Mode.DEMO,
+            trading: constants.Trading = constants.Trading.EQUITY,
+    ):
+        self.session = f&#34;TRADING212_SESSION_{mode.name}&#34;
+        self.base_url = f&#34;https://{mode.name.lower()}.trading212.com&#34;
+
+        console.log(f&#34;Starting PyTrading212 in [green]{mode.name}[/green] Mode&#34;)
+
+        self.driver = driver
+        self.driver.get(constants.LOGIN_URL)
+        # Click Accept all cookies if it appears
+        try:
+            self.driver.find_element(By.CLASS_NAME, constants.COOKIES_NOTICE_BUTTON).click()
+        except NoSuchElementException:
+            pass  # ignore
+        console.log(&#34;Authenticating&#34;)
+
+        # Authenticate
+        self.driver.find_element(By.NAME, &#34;email&#34;).send_keys(email)
+        self.driver.find_element(By.NAME, &#34;password&#34;).send_keys(password)
+
+        # Click login button
+        self.driver.find_element(By.CLASS_NAME, constants.LOGIN_BUTTON).click()
+
+        # wait until the site is fully loaded
+        condition = expected_conditions.visibility_of_element_located(
+            (By.CLASS_NAME, &#34;company-logo&#34;)
+        )
+
+        # 120 seconds is a lot, but the site sometimes is very slow
+        WebDriverWait(self.driver, 120).until(condition)
+
+        self.user_agent = self.driver.execute_script(&#34;return navigator.userAgent;&#34;)
+
+        # Redirect to correct mode, DEMO or LIVE
+        if mode.name not in self.driver.current_url:
+            self.driver.get(self.base_url)
+
+        # Switch between CFD or Equity
+        try:
+            self.driver.find_element(By.CLASS_NAME, &#34;equity&#34;)
+            self.is_equity = True
+        except NoSuchElementException:
+            self.is_equity = False
+
+        if trading == constants.Trading.EQUITY and not self.is_equity:
+            self.switch()
+        elif trading == constants.Trading.CFD and self.is_equity:
+            self.switch()
+
+        # Get session cookie
+        cookies = self.driver.get_cookies()
+        if cookies is not None:
+            for cookie in cookies:
+                # Get appropriate cookie for this session, live or demo
+                if self.session in cookie[&#39;name&#39;]:
+                    self.cookie = f&#34;{self.session}={cookie[&#39;value&#39;]};&#34;
+        else:
+            raise Exception(&#34;Unable to get cookies, aborting.&#34;)
+
+        # necessary headers for requests
+        self.headers = {
+            &#34;Accept&#34;: &#34;application/json&#34;,
+            &#34;Content-Type&#34;: &#34;application/json&#34;,
+            &#34;User-Agent&#34;: self.user_agent,
+            &#34;Cookie&#34;: self.cookie,
+        }
+
+        self.companies = self.get_companies()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.finish()
+
+    def finish(self):
+        self.driver.close()
+
+    def switch(self):
+        &#34;&#34;&#34;Switch between CFD or Equity to get the right cookie&#34;&#34;&#34;
+        headers = {
+            &#34;Accept&#34;: &#34;application/json&#34;,
+            &#34;Content-Type&#34;: &#34;application/json&#34;,
+            &#34;User-Agent&#34;: self.user_agent,
+            &#34;Cookie&#34;: f&#34;{self.driver.get_cookies()}&#34;,
+        }
+        requests.post(f&#34;{self.base_url}/rest/v1/account/switch&#34;, headers=headers)
+
+    def last_hour_hotlist(self):
+        &#34;&#34;&#34;Trading 212 last hour hotlist&#34;&#34;&#34;
+        response = requests.get(
+            f&#34;{self.base_url}/trading212.com/rest/positions-tracker/deltas/hourly/1&#34;
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_funds(self):
+        &#34;&#34;&#34;Get your funds, free, available.&#34;&#34;&#34;
+        response = requests.get(
+            f&#34;{self.base_url}/rest/customer/accounts/funds&#34;, headers=self.headers
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_orders(self, older_than: datetime, newer_than: datetime):
+        &#34;&#34;&#34;Get orders within a range of dates&#34;&#34;&#34;
+        params = {
+            &#39;olderThan&#39;: strftime(older_than.isoformat()),
+            &#39;newerThan&#39;: strftime(newer_than.isoformat())
+        }
+
+        response = requests.get(
+            f&#34;{self.base_url}/rest/history/orders&#34;, headers=self.headers, params=urlencode(params)
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_transactions(self, older_than: datetime, newer_than: datetime):
+        &#34;&#34;&#34;Get transactions within a range of dates&#34;&#34;&#34;
+        params = {
+            &#39;olderThan&#39;: strftime(older_than.isoformat()),
+            &#39;newerThan&#39;: strftime(newer_than.isoformat())
+        }
+        response = requests.get(
+            f&#34;{self.base_url}/rest/history/transactions&#34;, headers=self.headers, params=urlencode(params)
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_order_details(self, details_path):
+        &#34;&#34;&#34;Get Order Details&#34;&#34;&#34;
+        response = requests.get(f&#34;{self.base_url}/rest/history{details_path}&#34;, headers=self.headers)
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_dividends(self, older_than: datetime, newer_than: datetime):
+        &#34;&#34;&#34;Get dividends within a range of dates&#34;&#34;&#34;
+        params = {&#39;olderThan&#39;: strftime(older_than.isoformat()),
+                  &#39;newerThan&#39;: strftime(newer_than.isoformat())
+                  }
+
+        response = requests.get(
+            f&#34;{self.base_url}/rest/history/dividends&#34;, headers=self.headers, params=urlencode(params)
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_fundamentals(self, isin):
+        &#34;&#34;&#34;Get fundamentals of a company by its isin&#34;&#34;&#34;
+        params = {&#39;isin&#39;: isin}
+        response = requests.get(f&#34;{self.base_url}/rest/companies/fundamentals&#34;, params=params)
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_portfolio_performance(self, time_period: constants.Period):
+        &#34;&#34;&#34;Get Portfolio Performance&#34;&#34;&#34;
+        response = requests.get(
+            url=f&#34;{self.base_url}/rest/v2/portfolio?period={time_period}&#34;,
+            headers=self.headers,
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def get_portfolio_composition(self):
+        &#34;&#34;&#34;Get Portfolio Composition&#34;&#34;&#34;
+        # click portfolio section on right-sidepanel
+        right_sidepanel_portfolio_class = &#39;portfolio-icon&#39;
+        condition = expected_conditions.visibility_of_element_located(
+            (By.CLASS_NAME, right_sidepanel_portfolio_class)
+        )
+        WebDriverWait(self.driver, 30).until(condition)
+        self.driver.find_element(By.CLASS_NAME, right_sidepanel_portfolio_class).click()
+
+        positions = []
+        try:
+            # click on investments
+            self.driver.find_element(By.CLASS_NAME, &#39;investment-tab&#39;).click()
+            for item in self.driver.find_elements(By.CLASS_NAME, &#34;investment-item&#34;):
+                ticker = item.get_attribute(&#34;data-qa-item&#34;)
+                value = item.find_element(By.CLASS_NAME, &#34;total-value&#34;).text
+                quantity = item.find_element(By.CLASS_NAME, &#34;quantity&#34;).text
+                total_return = item.find_element(By.CLASS_NAME, &#34;return&#34;).text
+                position = Position(ticker, value, quantity, total_return)
+                positions.append(position.__dict__)
+        except Exception as e:
+            logging.error(e)  # portfolio is empty
+        return positions
+
+    def get_companies(self) -&gt; List[Company]:
+        &#34;&#34;&#34;Get Ticker of all Trading212 tradable companies&#34;&#34;&#34;
+        response = requests.get(
+            url=f&#34;{self.base_url}/rest/companies&#34;,
+            headers=self.headers
+        )
+        companies = []
+        json_response = json.loads(response.content.decode(&#34;utf-8&#34;))
+        for json_company in json_response:
+            companies.append(Company(instrument_code=json_company.get(&#34;ticker&#34;),
+                                     isin=json_company.get(&#34;isin&#34;)))
+        return companies
+
+    def max_sell_quantity(self, instrument_code: str):
+        response = requests.get(
+            f&#34;{self.base_url}/rest/v1/equity/value-order/min-max?instrumentCode={instrument_code}&#34;, headers=self.headers
+        )
+        return json.loads(response.content.decode(&#34;utf-8&#34;))
+
+    def search(self, query):
+        &#34;&#34;&#34;Search a company&#34;&#34;&#34;
+        found = []
+        companies = self.get_companies()
+        for company in companies:
+            if query in company[&#34;ticker&#34;]:
+                found.append(company[&#34;ticker&#34;])
+
+        response = requests.post(
+            f&#34;{self.base_url}/charting/prices?withFakes=false&#34;,
+            headers=self.headers,
+            data=found.__str__().replace(&#34;&#39;&#34;, &#39;&#34;&#39;),
+        )  # &#39; with &#34; for Trading212 compatibility
+        return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="pytrading212.trading212.CFD" href="#pytrading212.trading212.CFD">CFD</a></li>
+<li><a title="pytrading212.trading212.Equity" href="#pytrading212.trading212.Equity">Equity</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pytrading212.trading212.Trading212.finish"><code class="name flex">
+<span>def <span class="ident">finish</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def finish(self):
+    self.driver.close()</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Trading212.get_companies"><code class="name flex">
+<span>def <span class="ident">get_companies</span></span>(<span>self) ‑> List[<a title="pytrading212.company.Company" href="company.html#pytrading212.company.Company">Company</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get Ticker of all Trading212 tradable companies</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_companies(self) -&gt; List[Company]:
+    &#34;&#34;&#34;Get Ticker of all Trading212 tradable companies&#34;&#34;&#34;
+    response = requests.get(
+        url=f&#34;{self.base_url}/rest/companies&#34;,
+        headers=self.headers
+    )
+    companies = []
+    json_response = json.loads(response.content.decode(&#34;utf-8&#34;))
+    for json_company in json_response:
+        companies.append(Company(instrument_code=json_company.get(&#34;ticker&#34;),
+                                 isin=json_company.get(&#34;isin&#34;)))
+    return companies</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Trading212.get_dividends"><code class="name flex">
+<span>def <span class="ident">get_dividends</span></span>(<span>self, older_than: datetime.datetime, newer_than: datetime.datetime)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get dividends within a range of dates</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_dividends(self, older_than: datetime, newer_than: datetime):
+    &#34;&#34;&#34;Get dividends within a range of dates&#34;&#34;&#34;
+    params = {&#39;olderThan&#39;: strftime(older_than.isoformat()),
+              &#39;newerThan&#39;: strftime(newer_than.isoformat())
+              }
+
+    response = requests.get(
+        f&#34;{self.base_url}/rest/history/dividends&#34;, headers=self.headers, params=urlencode(params)
+    )
+    return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Trading212.get_fundamentals"><code class="name flex">
+<span>def <span class="ident">get_fundamentals</span></span>(<span>self, isin)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get fundamentals of a company by its isin</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_fundamentals(self, isin):
+    &#34;&#34;&#34;Get fundamentals of a company by its isin&#34;&#34;&#34;
+    params = {&#39;isin&#39;: isin}
+    response = requests.get(f&#34;{self.base_url}/rest/companies/fundamentals&#34;, params=params)
+    return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Trading212.get_funds"><code class="name flex">
+<span>def <span class="ident">get_funds</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get your funds, free, available.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_funds(self):
+    &#34;&#34;&#34;Get your funds, free, available.&#34;&#34;&#34;
+    response = requests.get(
+        f&#34;{self.base_url}/rest/customer/accounts/funds&#34;, headers=self.headers
+    )
+    return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Trading212.get_order_details"><code class="name flex">
+<span>def <span class="ident">get_order_details</span></span>(<span>self, details_path)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get Order Details</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_order_details(self, details_path):
+    &#34;&#34;&#34;Get Order Details&#34;&#34;&#34;
+    response = requests.get(f&#34;{self.base_url}/rest/history{details_path}&#34;, headers=self.headers)
+    return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Trading212.get_orders"><code class="name flex">
+<span>def <span class="ident">get_orders</span></span>(<span>self, older_than: datetime.datetime, newer_than: datetime.datetime)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get orders within a range of dates</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_orders(self, older_than: datetime, newer_than: datetime):
+    &#34;&#34;&#34;Get orders within a range of dates&#34;&#34;&#34;
+    params = {
+        &#39;olderThan&#39;: strftime(older_than.isoformat()),
+        &#39;newerThan&#39;: strftime(newer_than.isoformat())
+    }
+
+    response = requests.get(
+        f&#34;{self.base_url}/rest/history/orders&#34;, headers=self.headers, params=urlencode(params)
+    )
+    return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Trading212.get_portfolio_composition"><code class="name flex">
+<span>def <span class="ident">get_portfolio_composition</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get Portfolio Composition</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_portfolio_composition(self):
+    &#34;&#34;&#34;Get Portfolio Composition&#34;&#34;&#34;
+    # click portfolio section on right-sidepanel
+    right_sidepanel_portfolio_class = &#39;portfolio-icon&#39;
+    condition = expected_conditions.visibility_of_element_located(
+        (By.CLASS_NAME, right_sidepanel_portfolio_class)
+    )
+    WebDriverWait(self.driver, 30).until(condition)
+    self.driver.find_element(By.CLASS_NAME, right_sidepanel_portfolio_class).click()
+
+    positions = []
+    try:
+        # click on investments
+        self.driver.find_element(By.CLASS_NAME, &#39;investment-tab&#39;).click()
+        for item in self.driver.find_elements(By.CLASS_NAME, &#34;investment-item&#34;):
+            ticker = item.get_attribute(&#34;data-qa-item&#34;)
+            value = item.find_element(By.CLASS_NAME, &#34;total-value&#34;).text
+            quantity = item.find_element(By.CLASS_NAME, &#34;quantity&#34;).text
+            total_return = item.find_element(By.CLASS_NAME, &#34;return&#34;).text
+            position = Position(ticker, value, quantity, total_return)
+            positions.append(position.__dict__)
+    except Exception as e:
+        logging.error(e)  # portfolio is empty
+    return positions</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Trading212.get_portfolio_performance"><code class="name flex">
+<span>def <span class="ident">get_portfolio_performance</span></span>(<span>self, time_period: <a title="pytrading212.constants.Period" href="constants.html#pytrading212.constants.Period">Period</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get Portfolio Performance</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_portfolio_performance(self, time_period: constants.Period):
+    &#34;&#34;&#34;Get Portfolio Performance&#34;&#34;&#34;
+    response = requests.get(
+        url=f&#34;{self.base_url}/rest/v2/portfolio?period={time_period}&#34;,
+        headers=self.headers,
+    )
+    return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Trading212.get_transactions"><code class="name flex">
+<span>def <span class="ident">get_transactions</span></span>(<span>self, older_than: datetime.datetime, newer_than: datetime.datetime)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get transactions within a range of dates</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_transactions(self, older_than: datetime, newer_than: datetime):
+    &#34;&#34;&#34;Get transactions within a range of dates&#34;&#34;&#34;
+    params = {
+        &#39;olderThan&#39;: strftime(older_than.isoformat()),
+        &#39;newerThan&#39;: strftime(newer_than.isoformat())
+    }
+    response = requests.get(
+        f&#34;{self.base_url}/rest/history/transactions&#34;, headers=self.headers, params=urlencode(params)
+    )
+    return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Trading212.last_hour_hotlist"><code class="name flex">
+<span>def <span class="ident">last_hour_hotlist</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Trading 212 last hour hotlist</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def last_hour_hotlist(self):
+    &#34;&#34;&#34;Trading 212 last hour hotlist&#34;&#34;&#34;
+    response = requests.get(
+        f&#34;{self.base_url}/trading212.com/rest/positions-tracker/deltas/hourly/1&#34;
+    )
+    return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Trading212.max_sell_quantity"><code class="name flex">
+<span>def <span class="ident">max_sell_quantity</span></span>(<span>self, instrument_code: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def max_sell_quantity(self, instrument_code: str):
+    response = requests.get(
+        f&#34;{self.base_url}/rest/v1/equity/value-order/min-max?instrumentCode={instrument_code}&#34;, headers=self.headers
+    )
+    return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Trading212.search"><code class="name flex">
+<span>def <span class="ident">search</span></span>(<span>self, query)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Search a company</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def search(self, query):
+    &#34;&#34;&#34;Search a company&#34;&#34;&#34;
+    found = []
+    companies = self.get_companies()
+    for company in companies:
+        if query in company[&#34;ticker&#34;]:
+            found.append(company[&#34;ticker&#34;])
+
+    response = requests.post(
+        f&#34;{self.base_url}/charting/prices?withFakes=false&#34;,
+        headers=self.headers,
+        data=found.__str__().replace(&#34;&#39;&#34;, &#39;&#34;&#39;),
+    )  # &#39; with &#34; for Trading212 compatibility
+    return json.loads(response.content.decode(&#34;utf-8&#34;))</code></pre>
+</details>
+</dd>
+<dt id="pytrading212.trading212.Trading212.switch"><code class="name flex">
+<span>def <span class="ident">switch</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Switch between CFD or Equity to get the right cookie</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def switch(self):
+    &#34;&#34;&#34;Switch between CFD or Equity to get the right cookie&#34;&#34;&#34;
+    headers = {
+        &#34;Accept&#34;: &#34;application/json&#34;,
+        &#34;Content-Type&#34;: &#34;application/json&#34;,
+        &#34;User-Agent&#34;: self.user_agent,
+        &#34;Cookie&#34;: f&#34;{self.driver.get_cookies()}&#34;,
+    }
+    requests.post(f&#34;{self.base_url}/rest/v1/account/switch&#34;, headers=headers)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pytrading212" href="index.html">pytrading212</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pytrading212.trading212.CFD" href="#pytrading212.trading212.CFD">CFD</a></code></h4>
+<ul class="">
+<li><code><a title="pytrading212.trading212.CFD.close_position" href="#pytrading212.trading212.CFD.close_position">close_position</a></code></li>
+<li><code><a title="pytrading212.trading212.CFD.execute_order" href="#pytrading212.trading212.CFD.execute_order">execute_order</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pytrading212.trading212.Equity" href="#pytrading212.trading212.Equity">Equity</a></code></h4>
+<ul class="">
+<li><code><a title="pytrading212.trading212.Equity.cancel_order" href="#pytrading212.trading212.Equity.cancel_order">cancel_order</a></code></li>
+<li><code><a title="pytrading212.trading212.Equity.check_order" href="#pytrading212.trading212.Equity.check_order">check_order</a></code></li>
+<li><code><a title="pytrading212.trading212.Equity.execute_order" href="#pytrading212.trading212.Equity.execute_order">execute_order</a></code></li>
+<li><code><a title="pytrading212.trading212.Equity.review_order" href="#pytrading212.trading212.Equity.review_order">review_order</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pytrading212.trading212.Trading212" href="#pytrading212.trading212.Trading212">Trading212</a></code></h4>
+<ul class="">
+<li><code><a title="pytrading212.trading212.Trading212.finish" href="#pytrading212.trading212.Trading212.finish">finish</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_companies" href="#pytrading212.trading212.Trading212.get_companies">get_companies</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_dividends" href="#pytrading212.trading212.Trading212.get_dividends">get_dividends</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_fundamentals" href="#pytrading212.trading212.Trading212.get_fundamentals">get_fundamentals</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_funds" href="#pytrading212.trading212.Trading212.get_funds">get_funds</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_order_details" href="#pytrading212.trading212.Trading212.get_order_details">get_order_details</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_orders" href="#pytrading212.trading212.Trading212.get_orders">get_orders</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_portfolio_composition" href="#pytrading212.trading212.Trading212.get_portfolio_composition">get_portfolio_composition</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_portfolio_performance" href="#pytrading212.trading212.Trading212.get_portfolio_performance">get_portfolio_performance</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.get_transactions" href="#pytrading212.trading212.Trading212.get_transactions">get_transactions</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.last_hour_hotlist" href="#pytrading212.trading212.Trading212.last_hour_hotlist">last_hour_hotlist</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.max_sell_quantity" href="#pytrading212.trading212.Trading212.max_sell_quantity">max_sell_quantity</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.search" href="#pytrading212.trading212.Trading212.search">search</a></code></li>
+<li><code><a title="pytrading212.trading212.Trading212.switch" href="#pytrading212.trading212.Trading212.switch">switch</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

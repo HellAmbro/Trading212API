@@ -4,6 +4,7 @@ import json
 import logging
 from datetime import datetime
 from time import strftime
+from typing import List
 from urllib.parse import urlencode
 
 import requests
@@ -14,7 +15,8 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
 from pytrading212 import constants, console
-from pytrading212.order import ValueOrder, CFDOrder, EquityOrder
+from pytrading212.company import Company
+from pytrading212.order import CFDOrder, EquityOrder
 from pytrading212.position import Position
 
 
@@ -39,7 +41,7 @@ class Trading212:
             self.driver.find_element(By.CLASS_NAME, constants.COOKIES_NOTICE_BUTTON).click()
         except NoSuchElementException:
             pass  # ignore
-        console.log(f"Authenticating")
+        console.log("Authenticating")
 
         # Authenticate
         self.driver.find_element(By.NAME, "email").send_keys(email)
@@ -92,6 +94,8 @@ class Trading212:
             "Cookie": self.cookie,
         }
 
+        self.companies = self.get_companies()
+
     def __enter__(self):
         return self
 
@@ -102,7 +106,7 @@ class Trading212:
         self.driver.close()
 
     def switch(self):
-        """todo"""
+        """Switch between CFD or Equity to get the right cookie"""
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -112,20 +116,21 @@ class Trading212:
         requests.post(f"{self.base_url}/rest/v1/account/switch", headers=headers)
 
     def last_hour_hotlist(self):
-        """todo"""
+        """Trading 212 last hour hotlist"""
         response = requests.get(
             f"{self.base_url}/trading212.com/rest/positions-tracker/deltas/hourly/1"
         )
         return json.loads(response.content.decode("utf-8"))
 
     def get_funds(self):
+        """Get your funds, free, available."""
         response = requests.get(
             f"{self.base_url}/rest/customer/accounts/funds", headers=self.headers
         )
         return json.loads(response.content.decode("utf-8"))
 
     def get_orders(self, older_than: datetime, newer_than: datetime):
-        """todo"""
+        """Get orders within a range of dates"""
         params = {
             'olderThan': strftime(older_than.isoformat()),
             'newerThan': strftime(newer_than.isoformat())
@@ -137,7 +142,7 @@ class Trading212:
         return json.loads(response.content.decode("utf-8"))
 
     def get_transactions(self, older_than: datetime, newer_than: datetime):
-        """todo"""
+        """Get transactions within a range of dates"""
         params = {
             'olderThan': strftime(older_than.isoformat()),
             'newerThan': strftime(newer_than.isoformat())
@@ -148,12 +153,12 @@ class Trading212:
         return json.loads(response.content.decode("utf-8"))
 
     def get_order_details(self, details_path):
-        """todo"""
+        """Get Order Details"""
         response = requests.get(f"{self.base_url}/rest/history{details_path}", headers=self.headers)
         return json.loads(response.content.decode("utf-8"))
 
     def get_dividends(self, older_than: datetime, newer_than: datetime):
-        """todo"""
+        """Get dividends within a range of dates"""
         params = {'olderThan': strftime(older_than.isoformat()),
                   'newerThan': strftime(newer_than.isoformat())
                   }
@@ -164,13 +169,13 @@ class Trading212:
         return json.loads(response.content.decode("utf-8"))
 
     def get_fundamentals(self, isin):
-        """todo"""
+        """Get fundamentals of a company by its isin"""
         params = {'isin': isin}
         response = requests.get(f"{self.base_url}/rest/companies/fundamentals", params=params)
         return json.loads(response.content.decode("utf-8"))
 
     def get_portfolio_performance(self, time_period: constants.Period):
-        """todo"""
+        """Get Portfolio Performance"""
         response = requests.get(
             url=f"{self.base_url}/rest/v2/portfolio?period={time_period}",
             headers=self.headers,
@@ -178,6 +183,7 @@ class Trading212:
         return json.loads(response.content.decode("utf-8"))
 
     def get_portfolio_composition(self):
+        """Get Portfolio Composition"""
         # click portfolio section on right-sidepanel
         right_sidepanel_portfolio_class = 'portfolio-icon'
         condition = expected_conditions.visibility_of_element_located(
@@ -201,12 +207,18 @@ class Trading212:
             logging.error(e)  # portfolio is empty
         return positions
 
-    def get_companies(self):
+    def get_companies(self) -> List[Company]:
+        """Get Ticker of all Trading212 tradable companies"""
         response = requests.get(
             url=f"{self.base_url}/rest/companies",
             headers=self.headers
         )
-        return json.loads(response.content.decode("utf-8"))
+        companies = []
+        json_response = json.loads(response.content.decode("utf-8"))
+        for json_company in json_response:
+            companies.append(Company(instrument_code=json_company.get("ticker"),
+                                     isin=json_company.get("isin")))
+        return companies
 
     def max_sell_quantity(self, instrument_code: str):
         response = requests.get(
@@ -215,11 +227,13 @@ class Trading212:
         return json.loads(response.content.decode("utf-8"))
 
     def search(self, query):
+        """Search a company"""
         found = []
         companies = self.get_companies()
         for company in companies:
             if query in company["ticker"]:
                 found.append(company["ticker"])
+
         response = requests.post(
             f"{self.base_url}/charting/prices?withFakes=false",
             headers=self.headers,
@@ -229,13 +243,13 @@ class Trading212:
 
 
 class Equity(Trading212):
-    """todo"""
+    """Trading 212 Equity"""
 
     def __init__(self, email: str, password: str, driver: webdriver, mode: constants.Mode = constants.Mode.DEMO):
         super().__init__(email, password, driver, mode, constants.Trading.EQUITY)
 
     def review_order(self, order: EquityOrder):
-        """todo"""
+        """Preview of the order, with added costs and other useful data"""
         # Check if it is a 'value' order or a 'quantity' order
         if hasattr(order, 'value'):
             url = f"{self.base_url}/rest/v1/equity/value-order/review"
@@ -249,7 +263,7 @@ class Equity(Trading212):
         return json.loads(response.content.decode("utf-8"))
 
     def execute_order(self, order: EquityOrder):
-        """todo"""
+        """Execute equity order"""
         # Check if it is a 'value' order or a 'quantity' order
         if hasattr(order, 'value'):
             url = f"{self.base_url}/rest/v1/equity/value-order"
@@ -263,16 +277,23 @@ class Equity(Trading212):
         return json.loads(response.content.decode("utf-8"))
 
     def cancel_order(self, order_id):
-        """todo"""
+        """Cancel a pending order"""
         response = requests.delete(
             url=f"{self.base_url}/rest/public/v2/equity/order/{order_id}",
             headers=self.headers,
         )
         return json.loads(response.content.decode("utf-8"))
 
+    def check_order(self, equity_order: EquityOrder) -> [bool, str]:
+        """Check if Order is valid."""
+        if equity_order.instrument_code not in self.get_companies():
+            return False, f"Instrument Code {equity_order.instrument_code} is not a valid Trading212 Ticker"
+
+        #todo add more useful checks
+
 
 class CFD(Trading212):
-    """ Experimental CFD support"""
+    """ Trading 212 CFD """
 
     def __init__(self, email: str, password: str, driver: webdriver, mode: constants.Mode = constants.Mode.DEMO):
         super().__init__(email, password, driver, mode, constants.Trading.CFD)
@@ -288,7 +309,7 @@ class CFD(Trading212):
         return json.loads(response.content.decode("utf-8"))
 
     def close_position(self, position_id):
-        """Close an open position, position_id is needed"""
+        """Close an open position."""
         response = requests.delete(
             url=f"{self.base_url}/rest/v2/trading/open-positions/close/{position_id}",
             headers=self.headers,
