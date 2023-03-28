@@ -103,6 +103,7 @@ class Trading212:
         self.finish()
 
     def finish(self):
+        console.log("Closing session")
         self.driver.close()
 
     def switch(self):

@@ -24,7 +24,10 @@ class EquityOrder(Order):
             setattr(self, key, value)
 
         if not (hasattr(self, 'quantity') or hasattr(self, 'value')):
-            raise Exception("'value' or 'quantity' must be be provided.")
+            raise Exception("'value' or 'quantity' parameter must be be provided.")
+
+        if hasattr(self, 'quantity') and hasattr(self, 'value'):
+            raise Exception("'value' or 'quantity' both provided, only one is allowed.")
 
 
 class MarketOrder(EquityOrder):
