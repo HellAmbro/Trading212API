@@ -336,4 +336,4 @@ class CFD(Trading212):
                              target_price=0.0,
                              quantity=0.1)
         # Return only the current price
-        return self.execute_order(cfd_order)['context']['current']
+        return float(self.execute_order(cfd_order)['context']['current'])

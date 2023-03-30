@@ -7,7 +7,8 @@ class Order:
     def to_json(self):
         out = self.__dict__  # Convert order in dictionary
         # Replace ' with " for Trading212 compatibility
-        return dict((utils.to_camel_case(key), value) for (key, value) in out.items()).__str__().replace("'", '"')
+        return dict((utils.to_camel_case(key), value) for (key, value) in out.items()).__str__()\
+            .replace("'", '"')
 
 
 class EquityOrder(Order):
@@ -121,13 +122,11 @@ class CFDMarketOrder(CFDOrder):
                  instrument_code: str,
                  quantity: float,
                  target_price: float,
-                 limit_distance: float = None,
-                 stop_distance: float = None):
+                 **kwargs):
         super().__init__(instrument_code=instrument_code,
                          quantity=quantity,
                          target_price=target_price,
-                         limit_distance=limit_distance,
-                         stop_distance=stop_distance)
+                         **kwargs)
 
 
 class CFDLimitStopOrder(CFDOrder):

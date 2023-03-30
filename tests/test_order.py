@@ -42,7 +42,10 @@ def test_stop_order(test_order):
 
 def test_stop_limit_order(test_order):
     from pytrading212 import StopLimitOrder
-    test_order(equity_order=StopLimitOrder(instrument_code="AAPL_US_EQ", quantity=1, limit_price=150, stop_price=160,
+    test_order(equity_order=StopLimitOrder(instrument_code="AAPL_US_EQ",
+                                           quantity=1,
+                                           limit_price=150,
+                                           stop_price=160,
                                            time_validity=constants.TimeValidity.DAY),
                expected_json='{"instrumentCode":"AAPL_US_EQ","orderType":"STOP_LIMIT","quantity":1,"limitPrice":150,'
                              '"stopPrice":160,"timeValidity":"DAY"}')
