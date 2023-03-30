@@ -7,7 +7,8 @@ class Company:
 
 
 class CFDInstrument:
-    def __init__(self, ticker, sell_price, buy_price):
+    def __init__(self, name: str, ticker: str, sell_price: float, buy_price: float):
+        self.name = name
         self.ticker = ticker
         self.sell_price = sell_price
         self.buy_price = buy_price

@@ -108,9 +108,8 @@ class ValueOrder(EquityOrder):
 class CFDOrder(Order):
     """Base CFD Oder"""
 
-    def __init__(self, instrument_code: str, quantity: float, **kwargs):
+    def __init__(self, instrument_code: str, **kwargs):
         self.instrument_code = instrument_code
-        self.quantity = quantity
         self.notify = "NONE"
 
         for key, value in kwargs.items():
@@ -118,36 +117,41 @@ class CFDOrder(Order):
 
 
 class CFDMarketOrder(CFDOrder):
-    def __init__(self, instrument_code: str, target_price: float, quantity: float):
-        super().__init__(instrument_code)
-
-        # required by Trading212
-        # todo: try to fix this
-        # fixme: IMPORTANT! SINCE I'M NOT ABLE TO GET TARGET PRICE FROM TRADING212
-        #  TO EXECUTE MARKET ORDERS
-        # SELL OR BUY YOU NEED TO PASS A DUMMY TARGET PRICE WHICH MUST BE:
-        # > TO REAL BUY PRICE FOR BUY ORDERS,
-        # < TO REAL SELL PRICE FOR SELL ORDERS,
-        # EXAMPLE: COMPANY 'X' BUY: 100$, SELL: 99$,
-        # I WANT TO BUY, I SET target_price to 1000$, THE ORDER IS EXECUTED WITH THE BEST AVAILABLE PRICE, SO 100$,
-        # I WANT TO SELL, I SET target_price to 1$, THE ORDER IS EXECUTED WITH THE BEST AVAILABLE PRICE, SO 99$
-        # TRY IT YOURSELF IN DEMO MODE!
-        super.target_price = target_price
-        super.quantity = quantity
-
-
-class CFDLimitStopOrder(CFDOrder):
-    """todo"""
-
     def __init__(self,
                  instrument_code: str,
                  quantity: float,
                  target_price: float,
-                 take_profit: float,
-                 stop_loss: float,
-                 ):
+                 limit_distance: float = None,
+                 stop_distance: float = None):
+        super().__init__(instrument_code=instrument_code,
+                         quantity=quantity,
+                         target_price=target_price,
+                         limit_distance=limit_distance,
+                         stop_distance=stop_distance)
+
+
+class CFDLimitStopOrder(CFDOrder):
+    def __init__(self, instrument_code: str, target_price: float, take_profit: float, stop_loss: float):
+        # "https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/AAPL"
+        # {"quantity": 1.3, "targetPrice": 160, "takeProfit": null, "stopLoss": null, "notify": "NONE"}
+        super().__init__(instrument_code=instrument_code,
+                         target_price=target_price,
+                         take_profit=take_profit,
+                         stop_loss=stop_loss)
+
+    def to_json(self):
+        return super.to_json()
+
+
+class CFDOCOOrder(CFDOrder):
+    class OCOSubOrder(Order):
+        def __init__(self, price: float, quantity: float):
+            self.price = price
+            self.quantity = quantity
+
+    def __init__(self, instrument_code: str, order1: OCOSubOrder, order2: OCOSubOrder):
         super().__init__(instrument_code)
-        super.quantity = quantity
-        super.target_price = target_price,
-        super.take_profit = take_profit,
-        super.stop_loss = stop_loss
+        self.order1 = order1
+        self.order2 = order2
+
+    # {"order1": {"price": 170, "quantity": 2}, "order2": {"price": 150, "quantity": 2}, "notify": "NONE"}

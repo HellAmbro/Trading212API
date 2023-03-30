@@ -2,6 +2,7 @@
 
 import json
 import logging
+import re
 import time
 from datetime import datetime
 from time import strftime
@@ -99,17 +100,17 @@ class Trading212:
 
     def switch_to(self, trading: constants.Trading):
         self.driver.find_element(By.CLASS_NAME, "account-menu-info").click()
-        WebDriverWait(self.driver,10).until(expected_conditions.
-                                              visibility_of_element_located((By.CLASS_NAME, "account-types")))
+        WebDriverWait(self.driver, 10).until(expected_conditions.
+                                             visibility_of_element_located((By.CLASS_NAME, "account-types")))
         element_account_types = self.driver.find_element(By.CLASS_NAME, "account-types")
         if trading == constants.Trading.CFD:
             element_account_types.find_element(By.CLASS_NAME, "cfd").click()
             WebDriverWait(self.driver, 60).until(expected_conditions.
-                                                  visibility_of_element_located((By.CLASS_NAME, "cfd-icon")))
+                                                 visibility_of_element_located((By.CLASS_NAME, "cfd-icon")))
         elif trading == constants.Trading.EQUITY:
             element_account_types.find_element(By.CLASS_NAME, "equity").click()
             WebDriverWait(self.driver, 60).until(expected_conditions.
-                                                  visibility_of_element_located((By.CLASS_NAME, "equity-icon")))
+                                                 visibility_of_element_located((By.CLASS_NAME, "equity-icon")))
 
     def get_funds(self):
         """Get your funds, free, available."""
@@ -307,25 +308,6 @@ class CFD(Trading212):
         )
         return json.loads(response.content.decode("utf-8"))
 
-    def search(self, instrument_code: str) -> list[CFDInstrument]:
-        # Click on search icon in the left panel
-        self.driver.find_element(By.CLASS_NAME, "search-icon").click()
-        # Wait until search bar appears
-        WebDriverWait(self.driver, 10).until(expected_conditions.
-                                              visibility_of_element_located((By.CLASS_NAME, "css-115fr6g")))
-        # Search an instrument by instrument_code
-        self.driver.find_element(By.CLASS_NAME, "css-115fr6g").send_keys(instrument_code)
-        time.sleep(3)
-        try:
-            result = []
-            for wrapper in self.driver.find_elements(By.CLASS_NAME, "item-wrapper"):
-                ticker = wrapper.find_element(By.CLASS_NAME, "name").text()
-                sell_price = wrapper.find_element(By.CLASS_NAME, "sell").text()
-                buy_price = wrapper.find_element(By.CLASS_NAME, "buy").text()
-                result.append(CFDInstrument(ticker=ticker, sell_price=sell_price, buy_price=buy_price))
-        except NoSuchElementException:
-            return []
-
     def trading_additional_info(self, order: CFDOrder):
         """Get additional trading info before executing order."""
         params = {'instrumentCode': order.instrument_code,
@@ -345,3 +327,13 @@ class CFD(Trading212):
             headers=self.headers,
         )
         return json.loads(response.content.decode("utf-8"))
+
+    def get_current_price(self, instrument_code):
+        """Workaround to get the current price of a CFD."""
+        # Simulate an order with target price 0, T212 will respond with a business exception so we can get the
+        # current price
+        cfd_order = CFDOrder(instrument_code=instrument_code,
+                             target_price=0.0,
+                             quantity=0.1)
+        # Return only the current price
+        return self.execute_order(cfd_order)['context']['current']
