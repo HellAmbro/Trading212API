@@ -1,9 +1,11 @@
 """General Constants"""
 from enum import Enum
 
-LOGIN_URL = "https://www.trading212.com/en/login"
-COOKIES_NOTICE_BUTTON = "CookiesNotice_button__q5YaL"
-LOGIN_BUTTON = "SubmitButton_input__IV2dl"
+URL_LOGIN = "https://www.trading212.com/en/login"
+CLASS_COOKIES_NOTICE_BUTTON = "CookiesNotice_button__q5YaL"
+CLASS_LOGIN_BUTTON = "SubmitButton_input__IV2dl"
+CLASS_EQUITY_ICON = "equity-icon"
+CLASS_CFD_ICON = "cfd-icon"
 
 
 class Mode(Enum):

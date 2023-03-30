@@ -2,9 +2,9 @@
 
 import json
 import logging
+import time
 from datetime import datetime
 from time import strftime
-from typing import List
 from urllib.parse import urlencode
 
 import requests
@@ -15,7 +15,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
 from pytrading212 import constants, console
-from pytrading212.company import Company
+from pytrading212.instrument import CFDInstrument
 from pytrading212.order import CFDOrder, EquityOrder
 from pytrading212.position import Position
 
@@ -35,12 +35,14 @@ class Trading212:
         console.log(f"Starting PyTrading212 in [green]{mode.name}[/green] Mode")
 
         self.driver = driver
-        self.driver.get(constants.LOGIN_URL)
+        self.driver.get(constants.URL_LOGIN)
+
         # Click Accept all cookies if it appears
         try:
-            self.driver.find_element(By.CLASS_NAME, constants.COOKIES_NOTICE_BUTTON).click()
+            self.driver.find_element(By.CLASS_NAME, constants.CLASS_COOKIES_NOTICE_BUTTON).click()
         except NoSuchElementException:
             pass  # ignore
+
         console.log("Authenticating")
 
         # Authenticate
@@ -48,33 +50,22 @@ class Trading212:
         self.driver.find_element(By.NAME, "password").send_keys(password)
 
         # Click login button
-        self.driver.find_element(By.CLASS_NAME, constants.LOGIN_BUTTON).click()
+        self.driver.find_element(By.CLASS_NAME, constants.CLASS_LOGIN_BUTTON).click()
 
-        # wait until the site is fully loaded
-        condition = expected_conditions.visibility_of_element_located(
-            (By.CLASS_NAME, "company-logo")
-        )
-
-        # 120 seconds is a lot, but the site sometimes is very slow
-        WebDriverWait(self.driver, 120).until(condition)
+        # Wait until the site is fully loaded, 120 seconds is a lot, but the site sometimes is very slow
+        WebDriverWait(self.driver, 120).until(expected_conditions.
+                                              visibility_of_element_located((By.CLASS_NAME, "company-logo")))
 
         self.user_agent = self.driver.execute_script("return navigator.userAgent;")
 
         # Redirect to correct mode, DEMO or LIVE
         if mode.name not in self.driver.current_url:
             self.driver.get(self.base_url)
+            WebDriverWait(self.driver, 120).until(expected_conditions.
+                                                  visibility_of_element_located((By.CLASS_NAME, "company-logo")))
 
-        # Switch between CFD or Equity
-        try:
-            self.driver.find_element(By.CLASS_NAME, "equity")
-            self.is_equity = True
-        except NoSuchElementException:
-            self.is_equity = False
-
-        if trading == constants.Trading.EQUITY and not self.is_equity:
-            self.switch()
-        elif trading == constants.Trading.CFD and self.is_equity:
-            self.switch()
+        # Switch to right trading session: CFD or EQUITY
+        self.switch_to(trading=trading)
 
         # Get session cookie
         cookies = self.driver.get_cookies()
@@ -86,7 +77,7 @@ class Trading212:
         else:
             raise Exception("Unable to get cookies, aborting.")
 
-        # necessary headers for requests
+        # Necessary headers for requests
         self.headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -103,30 +94,34 @@ class Trading212:
         self.finish()
 
     def finish(self):
-        console.log("Closing session")
+        console.log("Closing session.")
         self.driver.close()
 
-    def switch(self):
-        """Switch between CFD or Equity to get the right cookie"""
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "User-Agent": self.user_agent,
-            "Cookie": f"{self.driver.get_cookies()}",
-        }
-        requests.post(f"{self.base_url}/rest/v1/account/switch", headers=headers)
+    def switch_to(self, trading: constants.Trading):
+        self.driver.find_element(By.CLASS_NAME, "account-menu-info").click()
+        WebDriverWait(self.driver,10).until(expected_conditions.
+                                              visibility_of_element_located((By.CLASS_NAME, "account-types")))
+        element_account_types = self.driver.find_element(By.CLASS_NAME, "account-types")
+        if trading == constants.Trading.CFD:
+            element_account_types.find_element(By.CLASS_NAME, "cfd").click()
+            WebDriverWait(self.driver, 60).until(expected_conditions.
+                                                  visibility_of_element_located((By.CLASS_NAME, "cfd-icon")))
+        elif trading == constants.Trading.EQUITY:
+            element_account_types.find_element(By.CLASS_NAME, "equity").click()
+            WebDriverWait(self.driver, 60).until(expected_conditions.
+                                                  visibility_of_element_located((By.CLASS_NAME, "equity-icon")))
+
+    def get_funds(self):
+        """Get your funds, free, available."""
+        response = requests.get(
+            f"{self.base_url}/rest/v2/customer/accounts/funds", headers=self.headers
+        )
+        return json.loads(response.content.decode("utf-8"))
 
     def last_hour_hotlist(self):
         """Trading 212 last hour hotlist"""
         response = requests.get(
             f"{self.base_url}/trading212.com/rest/positions-tracker/deltas/hourly/1"
-        )
-        return json.loads(response.content.decode("utf-8"))
-
-    def get_funds(self):
-        """Get your funds, free, available."""
-        response = requests.get(
-            f"{self.base_url}/rest/customer/accounts/funds", headers=self.headers
         )
         return json.loads(response.content.decode("utf-8"))
 
@@ -169,10 +164,14 @@ class Trading212:
         )
         return json.loads(response.content.decode("utf-8"))
 
-    def get_fundamentals(self, isin):
+    def get_fundamentals(self, ticker, language_code: str = "en"):
         """Get fundamentals of a company by its isin"""
-        params = {'isin': isin}
-        response = requests.get(f"{self.base_url}/rest/companies/fundamentals", params=params)
+        params = {'ticker': ticker,
+                  'languageCode': language_code
+                  }
+
+        response = requests.get(f"{self.base_url}/rest/companies/v2/fundamentals",
+                                params=params)
         return json.loads(response.content.decode("utf-8"))
 
     def get_portfolio_performance(self, time_period: constants.Period):
@@ -213,12 +212,6 @@ class Trading212:
         response = requests.get(
             url=f"{self.base_url}/rest/companies",
             headers=self.headers
-        )
-        return json.loads(response.content.decode("utf-8"))
-
-    def max_sell_quantity(self, instrument_code: str):
-        response = requests.get(
-            f"{self.base_url}/rest/v1/equity/value-order/min-max?instrumentCode={instrument_code}", headers=self.headers
         )
         return json.loads(response.content.decode("utf-8"))
 
@@ -286,9 +279,17 @@ class Equity(Trading212):
         for company in self.get_companies():
             if company['ticker'] == equity_order.instrument_code:
                 is_valid_ticker = True, f"Instrument Code {equity_order.instrument_code} is valid Trading212 Ticker"
+
         return is_valid_ticker
 
-        # todo add more useful checks
+    def min_max_sell_buy(self, instrument_code: str):
+        params = {'instrumentCode': instrument_code}
+        response = requests.get(
+            f"{self.base_url}/rest/v1/equity/value-order/min-max",
+            headers=self.headers,
+            params=params
+        )
+        return json.loads(response.content.decode("utf-8"))
 
 
 class CFD(Trading212):
@@ -298,12 +299,42 @@ class CFD(Trading212):
         super().__init__(email, password, driver, mode, constants.Trading.CFD)
 
     def execute_order(self, order: CFDOrder):
-        """https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/AAPL"""
-        """Execute CFD market order, stop loss and take profit not yet supported"""
+        """Execute CFD order"""
         response = requests.post(
             url=f"{self.base_url}/rest/v2/trading/open-positions",
             headers=self.headers,
             data=order.to_json(),
+        )
+        return json.loads(response.content.decode("utf-8"))
+
+    def search(self, instrument_code: str) -> list[CFDInstrument]:
+        # Click on search icon in the left panel
+        self.driver.find_element(By.CLASS_NAME, "search-icon").click()
+        # Wait until search bar appears
+        WebDriverWait(self.driver, 10).until(expected_conditions.
+                                              visibility_of_element_located((By.CLASS_NAME, "css-115fr6g")))
+        # Search an instrument by instrument_code
+        self.driver.find_element(By.CLASS_NAME, "css-115fr6g").send_keys(instrument_code)
+        time.sleep(3)
+        try:
+            result = []
+            for wrapper in self.driver.find_elements(By.CLASS_NAME, "item-wrapper"):
+                ticker = wrapper.find_element(By.CLASS_NAME, "name").text()
+                sell_price = wrapper.find_element(By.CLASS_NAME, "sell").text()
+                buy_price = wrapper.find_element(By.CLASS_NAME, "buy").text()
+                result.append(CFDInstrument(ticker=ticker, sell_price=sell_price, buy_price=buy_price))
+        except NoSuchElementException:
+            return []
+
+    def trading_additional_info(self, order: CFDOrder):
+        """Get additional trading info before executing order."""
+        params = {'instrumentCode': order.instrument_code,
+                  'quantity': order.quantity,
+                  'positionId': 'null'}
+        response = requests.get(
+            f"{self.base_url}/rest/v1/tradingAdditionalInfo",
+            headers=self.headers,
+            params=params
         )
         return json.loads(response.content.decode("utf-8"))
 
@@ -314,32 +345,3 @@ class CFD(Trading212):
             headers=self.headers,
         )
         return json.loads(response.content.decode("utf-8"))
-
-    """{instrumentCode: "AAPL", targetPrice: 159.85, limitDistance: null, stopDistance: null, quantity: 1.5,…}
-instrumentCode
-: 
-"AAPL"
-limitDistance
-: 
-null
-notify
-: 
-"NONE"
-quantity
-: 
-1.5
-stopDistance
-: 
-null
-targetPrice
-: 
-159.85"""
-    # response = requests.post(https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/EURUSD)
-    # {"notify": "NONE", "order1": {"price": 232, "quantity": -70}, "order2": {"price": 231.3, "quantity": -70}}
-    # https://demo.trading212.com/rest/v2/pending-orders/entry-oco/VOW3
-    # {"notify":"NONE","targetPrice":234.07,"takeProfit":null,"stopLoss":null,"quantity":1}
-    # https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/VOW3
-    # {"notify": "NONE", "targetPrice": 234.32, "quantity": 2, "instrumentCode": "VOW3"}
-    # {"notify":"NONE","targetPrice":218.07,"limitDistance":6.85,"stopDistance":3.05,"quantity":1,"instrumentCode":"BIDU"}
-    # def open_position(self):
-    #    response = requests.post('https://demo.trading212.com/rest/v2/trading/open-positions', headers=headers)

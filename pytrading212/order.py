@@ -29,6 +29,12 @@ class EquityOrder(Order):
         if hasattr(self, 'quantity') and hasattr(self, 'value'):
             raise Exception("'value' or 'quantity' both provided, only one is allowed.")
 
+    def is_value_order(self):
+        return hasattr(self, 'value')
+
+    def is_quantity_order(self):
+        return hasattr(self, 'quantity')
+
 
 class MarketOrder(EquityOrder):
     """Market Order Wrapper."""
@@ -102,8 +108,9 @@ class ValueOrder(EquityOrder):
 class CFDOrder(Order):
     """Base CFD Oder"""
 
-    def __init__(self, instrument_code: str, **kwargs):
+    def __init__(self, instrument_code: str, quantity: float, **kwargs):
         self.instrument_code = instrument_code
+        self.quantity = quantity
         self.notify = "NONE"
 
         for key, value in kwargs.items():

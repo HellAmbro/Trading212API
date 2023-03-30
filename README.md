@@ -16,7 +16,7 @@
 pip install pytrading212
 ```
 ### Warning :warning:
-When you are using the API you cannot access Trading212 from other devices and browsers, except for the webdriver.A new access from another browser may disconnect the current session, invalidating the _cookie_ and making the API not work.
+When you are using the API you cannot access Trading212 from other devices and browsers, except for the webdriver.New access from another browser may disconnect the current session, invalidating the _cookie_ and making the API not work.
 ### Example PyTrading212 Usage
 
 Complete code
