@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "trading212api"
-version = "0.2.4"
+name = "pytrading212"
+version = "0.2.5"
 description = "Unofficial Trading212 API"
 authors = ["HellAmbro <frambrosini1998@gmail.com>"]
 license = "MIT License"
