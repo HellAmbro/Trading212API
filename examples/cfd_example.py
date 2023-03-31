@@ -1,16 +1,61 @@
-import sys
+import configparser
 
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
-from pytrading212 import *
+from pytrading212 import CFD, CFDMarketOrder, CFDLimitStopOrder, CFDOCOOrder
+from pytrading212 import Mode
 
-if __name__ == "__main__":
-    # python example_2 'my_email' 'mypassword'
-    email = sys.argv[1]
-    password = sys.argv[2]
-    driver = webdriver.Chrome(executable_path='chromedriver.exe')
+config = configparser.ConfigParser()
+config.read('../config.ini')
 
-    cfd = CFD(email, password, driver, mode=Mode.DEMO)
-    order = CFDMarketOrder(instrument_code='EURGBP', target_price=10.0, quantity=500)
-    cfd_order_outcome = cfd.execute_order(order)
-    print(cfd_order_outcome)
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+cfd = CFD(email=config['ACCOUNT']['email'], password=config['ACCOUNT']['password'], driver=driver, mode=Mode.DEMO)
+
+# Apple instrument code
+instrument_code = "AAPL"
+
+# Market Orders
+cfd_order = CFDMarketOrder(instrument_code=instrument_code,
+                           quantity=0.1,  # Buy (quantity is positive)
+                           target_price=cfd.get_current_price(instrument_code=instrument_code))
+print(cfd.execute_order(order=cfd_order))
+
+current_price = cfd.get_current_price(instrument_code=instrument_code)
+cfd_order = CFDMarketOrder(instrument_code=instrument_code,
+                           quantity=0.5,
+                           target_price=current_price,
+                           limit_distance=5)
+print(cfd.execute_order(cfd_order))
+
+current_price = cfd.get_current_price(instrument_code=instrument_code)
+cfd_order = CFDMarketOrder(instrument_code=instrument_code,
+                           quantity=0.5,
+                           target_price=current_price,
+                           stop_distance=2.0)
+print(cfd.execute_order(cfd_order))
+
+current_price = cfd.get_current_price(instrument_code=instrument_code)
+cfd_order = CFDMarketOrder(instrument_code=instrument_code,
+                           quantity=0.5,
+                           target_price=current_price,
+                           limit_distance=4.0,
+                           stop_distance=2.0,
+                           )
+print(cfd.execute_order(cfd_order))
+
+# Limit Stop Order (Pending Orders)
+target_price = cfd.get_current_price(instrument_code=instrument_code) - 20.0
+cfd_limit_stop_order = CFDLimitStopOrder(instrument_code=instrument_code,
+                                         target_price=target_price,
+                                         quantity=1,
+                                         take_profit=target_price + 10,
+                                         stop_loss=target_price - 10)
+print(cfd.execute_order(cfd_limit_stop_order))
+
+# OCO Order (Order Cancel Order)
+cfd_oco_order = CFDOCOOrder(instrument_code=instrument_code,
+                            order1=CFDOCOOrder.OCOSubOrder(price=150, quantity=1),
+                            order2=CFDOCOOrder.OCOSubOrder(price=180.0, quantity=-1))
+print(cfd.execute_order(cfd_oco_order))

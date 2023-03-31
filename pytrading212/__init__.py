@@ -1,3 +1,6 @@
-from .order import *
+from .order import EquityOrder, MarketOrder, LimitOrder, StopOrder, StopLimitOrder, ValueOrder, CFDMarketOrder, \
+    CFDLimitStopOrder, CFDOCOOrder
+from .trading212 import Equity, CFD
+from .constants import Mode, Trading, Period, OrderType, TimeValidity
 from .position import Position
-from .trading212 import CFD, Trading212, Mode
+from .instrument import CFDInstrument, Company

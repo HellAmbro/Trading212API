@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pytrading212",
-    version="0.2.4",
+    version="0.2.5",
     author="HellAmbro",
     author_email="frambrosini1998@gmail.com",
     description="Unofficial Trading212 API",
@@ -15,12 +15,12 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     dependencies=[
         'selenium',
-        'webdriver-manager',
-        'requests'
+        'requests',
+        'rich',
     ],
     classifiers=[
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.9",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.9',
 )
