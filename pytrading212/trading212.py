@@ -301,8 +301,19 @@ class CFD(Trading212):
 
     def execute_order(self, order: CFDOrder):
         """Execute CFD order"""
+
+        # Check if it is Limit Stop Order
+        if hasattr(order, 'is_limit_stop') and order.is_limit_stop == True:
+            url = f"{self.base_url}/rest/v2/pending-orders/entry-dep-limit-stop/{order.instrument_code}"
+        # Check if it is OCO Order
+        elif hasattr(order, 'is_oco') and order.is_oco == True:
+            url = f"{self.base_url}/rest/v2/pending-orders/entry-oco/{order.instrument_code}"
+        # Market Order
+        else:
+            url = f"{self.base_url}/rest/v2/trading/open-positions"
+
         response = requests.post(
-            url=f"{self.base_url}/rest/v2/trading/open-positions",
+            url=url,
             headers=self.headers,
             data=order.to_json(),
         )

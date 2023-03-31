@@ -7,7 +7,7 @@ class Order:
     def to_json(self):
         out = self.__dict__  # Convert order in dictionary
         # Replace ' with " for Trading212 compatibility
-        return dict((utils.to_camel_case(key), value) for (key, value) in out.items()).__str__()\
+        return dict((utils.to_camel_case(key), value) for (key, value) in out.items()).__str__() \
             .replace("'", '"')
 
 
@@ -110,14 +110,16 @@ class CFDOrder(Order):
     """Base CFD Oder"""
 
     def __init__(self, instrument_code: str, **kwargs):
-        self.instrument_code = instrument_code
         self.notify = "NONE"
+        self.instrument_code = instrument_code
 
         for key, value in kwargs.items():
             setattr(self, key, value)
 
 
 class CFDMarketOrder(CFDOrder):
+    """CFD Market Order"""
+
     def __init__(self,
                  instrument_code: str,
                  quantity: float,
@@ -130,27 +132,45 @@ class CFDMarketOrder(CFDOrder):
 
 
 class CFDLimitStopOrder(CFDOrder):
-    def __init__(self, instrument_code: str, target_price: float, take_profit: float, stop_loss: float):
-        # "https://demo.trading212.com/rest/v2/pending-orders/entry-dep-limit-stop/AAPL"
-        # {"quantity": 1.3, "targetPrice": 160, "takeProfit": null, "stopLoss": null, "notify": "NONE"}
+    """CFD Limit Stop Order (Pending Order)"""
+
+    def __init__(self, instrument_code: str, quantity: float, target_price: float, **kwargs):
         super().__init__(instrument_code=instrument_code,
                          target_price=target_price,
-                         take_profit=take_profit,
-                         stop_loss=stop_loss)
+                         quantity=quantity,
+                         is_limit_stop=True,
+                         **kwargs)
 
     def to_json(self):
-        return super.to_json()
+        tmp = self
+        delattr(tmp, 'instrument_code')  # Remove instrument code
+        delattr(tmp, 'is_limit_stop')  # Remove is_limit_stop flag
+        out = CFDOrder.to_json(tmp)
+        return out
 
 
 class CFDOCOOrder(CFDOrder):
+    """CFD OCO Order"""
+
     class OCOSubOrder(Order):
+        """CFD OCO Sub Order"""
+
         def __init__(self, price: float, quantity: float):
             self.price = price
             self.quantity = quantity
 
-    def __init__(self, instrument_code: str, order1: OCOSubOrder, order2: OCOSubOrder):
-        super().__init__(instrument_code)
-        self.order1 = order1
-        self.order2 = order2
+        def __repr__(self):
+            return Order.to_json(self)
 
-    # {"order1": {"price": 170, "quantity": 2}, "order2": {"price": 150, "quantity": 2}, "notify": "NONE"}
+    def __init__(self, instrument_code: str, order1: OCOSubOrder, order2: OCOSubOrder):
+        super().__init__(instrument_code=instrument_code,
+                         order1=order1,
+                         order2=order2,
+                         is_oco=True)
+
+    def to_json(self):
+        tmp = self
+        delattr(tmp, 'instrument_code')  # Remove instrument code
+        delattr(tmp, 'is_oco')  # Remove is_oco flag
+        out = CFDOrder.to_json(tmp)
+        return out
