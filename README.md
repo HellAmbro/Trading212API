@@ -3,6 +3,9 @@
 # PyTrading212 API
 
 ## Unofficial API for Trading212
+### Unofficial API for Trading212 broker.
+
+
 
 ### [Documentation](https://hellambro.github.io/Trading212API/)
 
@@ -24,10 +27,12 @@
 
 </div>
 
-
 <div align="left">
 
-## Installation
+### Discord Channel for support
+[Discord](https://discord.gg/PmWemEUA)
+
+  ## Installation
 
 ```bash
 pip install pytrading212
