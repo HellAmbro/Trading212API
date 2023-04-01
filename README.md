@@ -172,7 +172,7 @@ order = EquityOrder(instrument_code="AAPL_US_EQ", order_type=OrderType.MARKET, q
 equity.execute_order(order=order)
 ```
 
-or alternatively
+or
 
 ```python
 # Buy
@@ -181,7 +181,6 @@ equity.execute_order(order=market_order)
 ```
 
 These two orders are equivalent, you can use both ways indifferently.
-or alternatively
 
 For selling stocks (**that you own**, for short-selling see CFD section below) you just need to change the sign of
 _quantity_ or _value_ property
@@ -192,7 +191,7 @@ order = EquityOrder(instrument_code="AAPL_US_EQ", order_type=OrderType.MARKET, q
 equity.execute_order(order=order)
 ```
 
-or alternatively
+or
 
 ```python
 # Sell
@@ -249,7 +248,7 @@ improving code readability.
 
 ### [CFD Order](https://hellambro.github.io/Trading212API/order.html#pytrading212.order.CFDOrder)
 
-You can use three types of CFD Orders: `Market`, `Limit/Stop`, `OCO` (Order Cancel Order)
+You can use 3 types of CFD Orders: `Market`, `Limit/Stop`, `OCO` (Order Cancel Order)
 
 #### Market Order
 
@@ -307,7 +306,7 @@ You should add/subtract these quantities to the current price in order to get TP
 ```                                                   
 current_price = 150.0
 limit_distance = 10.0   -> TP price = 150.0 + 10.0 = 160.0
-stop_distance = 5.0     -> SL price = 150.0 - 5.0 =  155.0
+stop_distance = 5.0     -> SL price = 150.0 - 5.0 =  145.0
 ```
 
 #### Limit/Stop Order (Pending Order with specified price)
@@ -379,7 +378,7 @@ cfd_oco_order = CFDOCOOrder(instrument_code=instrument_code,
 
 ### Useful resources
 
-- [Use Trading212 for Automatic Trading: an introduction to pytrading212](https://medium.com/@francescoelambroambrosini/use-trading212-for-automatic-trading-an-introduction-to-pytrading212-367449b40a6)
+- [Use Trading212 for Automatic Trading: an introduction to pytrading212 (Depreacted since v0.2.5)](https://medium.com/@francescoelambroambrosini/use-trading212-for-automatic-trading-an-introduction-to-pytrading212-367449b40a6)
 - [Driver requirements](https://www.selenium.dev/documentation/en/webdriver/driver_requirements)
 - [Getting started with WebDriver](https://www.selenium.dev/documentation/en/getting_started_with_webdriver/)
 
