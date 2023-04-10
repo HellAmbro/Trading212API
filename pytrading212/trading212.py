@@ -99,6 +99,7 @@ class Trading212:
         self.driver.close()
 
     def switch_to(self, trading: constants.Trading):
+        WebDriverWait(self.driver, 60).until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "account-menu-info")))
         self.driver.find_element(By.CLASS_NAME, "account-menu-info").click()
         WebDriverWait(self.driver, 10).until(expected_conditions.
                                              visibility_of_element_located((By.CLASS_NAME, "account-types")))
