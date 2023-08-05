@@ -13,8 +13,8 @@ config.read('../config.ini')
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 cfd = CFD(email=config['ACCOUNT']['email'], password=config['ACCOUNT']['password'], driver=driver, mode=Mode.DEMO)
 
-# Apple instrument code
-instrument_code = "AAPL"
+# Instrument code
+instrument_code = "AIRBUS"
 
 # Market Orders
 cfd_order = CFDMarketOrder(instrument_code=instrument_code,

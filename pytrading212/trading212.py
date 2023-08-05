@@ -33,18 +33,23 @@ class Trading212:
         self.session = f"TRADING212_SESSION_{mode.name}"
         self.base_url = f"https://{mode.name.lower()}.trading212.com"
 
-        console.log(f"Starting PyTrading212 in [green]{mode.name}[/green] Mode")
+        console.log(f"Starting PyTrading212 v{constants.PYTRADING212_VERSION}\n"
+                    f"Trading: [green]{trading.name}[/green] \n"
+                    f"Mode: [green]{mode.name}[/green]")
 
         self.driver = driver
         self.driver.get(constants.URL_LOGIN)
 
         # Click Accept all cookies if it appears
         try:
+            console.log("Closing 'Cookies Popup'")
             self.driver.find_element(By.CLASS_NAME, constants.CLASS_COOKIES_NOTICE_BUTTON).click()
         except NoSuchElementException:
             pass  # ignore
 
         console.log("Authenticating")
+
+        WebDriverWait(self.driver, 120).until(expected_conditions.visibility_of_element_located((By.NAME, "email")))
 
         # Authenticate
         self.driver.find_element(By.NAME, "email").send_keys(email)
@@ -99,7 +104,7 @@ class Trading212:
         self.driver.close()
 
     def switch_to(self, trading: constants.Trading):
-        WebDriverWait(self.driver, 60).until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "account-menu-info")))
+        time.sleep(2) # Wait until the loading page is gone
         self.driver.find_element(By.CLASS_NAME, "account-menu-info").click()
         WebDriverWait(self.driver, 10).until(expected_conditions.
                                              visibility_of_element_located((By.CLASS_NAME, "account-types")))

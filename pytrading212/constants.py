@@ -6,7 +6,7 @@ CLASS_COOKIES_NOTICE_BUTTON = "CookiesNotice_button__q5YaL"
 CLASS_LOGIN_BUTTON = "SubmitButton_input__IV2dl"
 CLASS_EQUITY_ICON = "equity-icon"
 CLASS_CFD_ICON = "cfd-icon"
-
+PYTRADING212_VERSION = "0.2.5"
 
 class Mode(Enum):
     """Mode Type"""
