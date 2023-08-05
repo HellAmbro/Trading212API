@@ -14,7 +14,7 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 cfd = CFD(email=config['ACCOUNT']['email'], password=config['ACCOUNT']['password'], driver=driver, mode=Mode.DEMO)
 
 # Instrument code
-instrument_code = "AIRBUS"
+instrument_code = "AAPL"
 
 # Market Orders
 cfd_order = CFDMarketOrder(instrument_code=instrument_code,
