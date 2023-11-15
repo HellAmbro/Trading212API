@@ -104,19 +104,21 @@ class Trading212:
         self.driver.close()
 
     def switch_to(self, trading: constants.Trading):
-        time.sleep(2) # Wait until the loading page is gone
-        self.driver.find_element(By.CLASS_NAME, "account-menu-info").click()
-        WebDriverWait(self.driver, 10).until(expected_conditions.
-                                             visibility_of_element_located((By.CLASS_NAME, "account-types")))
-        element_account_types = self.driver.find_element(By.CLASS_NAME, "account-types")
-        if trading == constants.Trading.CFD:
-            element_account_types.find_element(By.CLASS_NAME, "cfd").click()
-            WebDriverWait(self.driver, 60).until(expected_conditions.
-                                                 visibility_of_element_located((By.CLASS_NAME, "cfd-icon")))
-        elif trading == constants.Trading.EQUITY:
-            element_account_types.find_element(By.CLASS_NAME, "equity").click()
-            WebDriverWait(self.driver, 60).until(expected_conditions.
-                                                 visibility_of_element_located((By.CLASS_NAME, "equity-icon")))
+        if not self.driver.find_elements(By.ID, "platform-loader"):
+            self.driver.find_element(By.CLASS_NAME, "account-menu-info").click()
+            WebDriverWait(self.driver, 10).until(expected_conditions.
+                                                 visibility_of_element_located((By.CLASS_NAME, "account-types")))
+            element_account_types = self.driver.find_element(By.CLASS_NAME, "account-types")
+            if trading == constants.Trading.CFD:
+                element_account_types.find_element(By.CLASS_NAME, "cfd").click()
+                WebDriverWait(self.driver, 60).until(expected_conditions.
+                                                     visibility_of_element_located((By.CLASS_NAME, "cfd-icon")))
+            elif trading == constants.Trading.EQUITY:
+                element_account_types.find_element(By.CLASS_NAME, "equity").click()
+                WebDriverWait(self.driver, 60).until(expected_conditions.
+                                                     visibility_of_element_located((By.CLASS_NAME, "equity-icon")))
+        else:
+            self.switch_to(trading)
 
     def get_funds(self):
         """Get your funds, free, available."""
