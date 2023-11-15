@@ -2,16 +2,14 @@ import configparser
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 
 from pytrading212 import Equity
 from pytrading212 import Mode, EquityOrder, OrderType
 
-
 config = configparser.ConfigParser()
 config.read('../config.ini')
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+driver = webdriver.Chrome(service=Service())
 equity = Equity(email=config['ACCOUNT']['email'], password=config['ACCOUNT']['password'], driver=driver, mode=Mode.DEMO)
 
 # Invalid order: voluntary typo-error in instrument code

@@ -52,15 +52,15 @@ For a full reference please look inside **examples** folder
 ```python
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 
 from pytrading212 import Equity
 from pytrading212 import Mode, EquityOrder, OrderType
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+driver = webdriver.Chrome(service=Service())
 equity = Equity(email='your_email', password='your_password', driver=driver, mode=Mode.DEMO)
 
 # Invalid order: voluntary typo-error in instrument code
+order = EquityOrder(instrument_code="AAAAPL_US_EQ", order_type=OrderType.MARKET, quantity=2)
 is_valid, reason = equity.check_order(order)
 if is_valid:
     print("Your order is valid, can be executed.")
@@ -84,12 +84,11 @@ equity.finish()
 ```python
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 
-from pytrading212 import CFD, CFDOrder, CFDMarketOrder
+from pytrading212 import CFD, CFDOrder
 from pytrading212 import Mode
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+driver = webdriver.Chrome(service=Service())
 cfd = CFD(email='your_email', password='your_password', driver=driver, mode=Mode.DEMO)
 
 instrument_code = "AAPL"
@@ -111,14 +110,14 @@ print(cfd.execute_order(order=cfd_order))
 PyTrading212 **Equity** instance
 
 ```python
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+driver = webdriver.Chrome(service=Service())
 equity = Equity(email='your_email', password='your_password', driver=driver, mode=Mode.DEMO)
 ```
 
 PyTrading212 **CFD** instance
 
 ```python
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+driver = webdriver.Chrome(service=Service())
 cfd = CFD(email='your_email', password='your_password', driver=driver, mode=Mode.DEMO)
 ```
 

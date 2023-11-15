@@ -2,7 +2,6 @@ import configparser
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 
 from pytrading212 import CFD, CFDMarketOrder, CFDLimitStopOrder, CFDOCOOrder
 from pytrading212 import Mode
@@ -10,7 +9,7 @@ from pytrading212 import Mode
 config = configparser.ConfigParser()
 config.read('../config.ini')
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+driver = webdriver.Chrome(service=Service())
 cfd = CFD(email=config['ACCOUNT']['email'], password=config['ACCOUNT']['password'], driver=driver, mode=Mode.DEMO)
 
 # Instrument code

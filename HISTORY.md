@@ -1,3 +1,6 @@
+### v0.2.6
+    * removed depreacted driver manager
+    * fix cfd/equity switch
 ### v0.2.5
 
     * Support CFD
