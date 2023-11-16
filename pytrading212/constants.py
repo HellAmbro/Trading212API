@@ -28,6 +28,7 @@ class Period(Enum):
     LAST_THREE_MONTHS = "LAST_THREE_MONTHS",
     LAST_YEAR = "LAST_YEAR",
     ALL = "ALL",
+    ONE_WEEK = "ONE_WEEK"
 
 
 class OrderType(Enum):
