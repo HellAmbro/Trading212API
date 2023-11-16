@@ -3,7 +3,7 @@ import typing
 import requests
 import json
 
-from constants import Period, HEADERS
+from constants import ONE_WEEK
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -21,8 +21,8 @@ class CandleStick(object):
     unknown: int
 
     def __init__(self,  data: typing.List) -> None:
-        self.timestamp, self.high, self.low, self.opening, \
-            self.closing, self.unknown = data
+        self.timestamp, self.high, self.low, self.opening, self.closing, self.unknown = data
+
 
 
 class Company:
@@ -37,15 +37,28 @@ class Company:
 
     def get_pricing_history(
             self,
-            interval: Period,
+            interval: str,
             trading_instance: 'Trading212'
     ) -> typing.List[CandleStick]:
+
+        ticker_data: str = json.dumps(
+            {
+                "candles":
+                    [
+                        {
+                            "ticker": self.instrument_code,
+                            "useAskPrice": True,
+                            "period": interval,
+                            "size":500
+                        }
+                    ]
+            }
+        )
 
         response = requests.put(
             f"{trading_instance.base_url}{self.charting_url}?ticker={self.instrument_code}&languageCode={self.language_code}",
             headers=equity.headers,
-            data='{"candles":[{"ticker":"AAPL_US_EQ","useAskPrice":true,"period":"ONE_WEEK","size":500}]}'
-
+            data=ticker_data
         )
         return [
             CandleStick(x) for x in json.loads(
