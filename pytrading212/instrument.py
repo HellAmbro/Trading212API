@@ -13,6 +13,18 @@ from selenium.webdriver.chrome.options import Options
 
 class CandleStick(object):
 
+    """
+        The candlestick object is a representaion of the values used in a candlestick
+        chart.
+
+        It consists of an opening timestamp opening price, closing price as well
+        as a high and low price.
+
+        The trading212 api also gives an int value which seems to be 0 all the
+        time which I have not figured out what this is but it is included as
+        "unknown"
+    """
+
     opening: float
     closing: float
     high: float
