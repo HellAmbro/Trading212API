@@ -8,6 +8,8 @@ CLASS_EQUITY_ICON = "equity-icon"
 CLASS_CFD_ICON = "cfd-icon"
 PYTRADING212_VERSION = "0.2.5"
 
+ONE_WEEK = "ONE_WEEK"
+
 class Mode(Enum):
     """Mode Type"""
     DEMO = "demo",
@@ -28,6 +30,7 @@ class Period(Enum):
     LAST_THREE_MONTHS = "LAST_THREE_MONTHS",
     LAST_YEAR = "LAST_YEAR",
     ALL = "ALL",
+
 
 
 class OrderType(Enum):
