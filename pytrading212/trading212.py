@@ -58,21 +58,18 @@ class Trading212:
         # Click login button
         self.driver.find_element(By.CLASS_NAME, constants.CLASS_LOGIN_BUTTON).click()
 
-        # Wait until the site is fully loaded, 120 seconds is a lot, but the site sometimes is very slow
-        WebDriverWait(self.driver, 120).until(expected_conditions.
-                                              visibility_of_element_located((By.CLASS_NAME, "company-logo")))
+        # Close new app button, should be removed later
+        try:
+            WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located(
+                (By.CSS_SELECTOR, constants.SELECTOR_NEW_APP)))
+            self.driver.find_element(By.CSS_SELECTOR, constants.SELECTOR_NEW_APP).click()
+        except NoSuchElementException:
+            pass
 
         self.user_agent = self.driver.execute_script("return navigator.userAgent;")
 
-        # Redirect to correct mode, DEMO or LIVE
-        if mode.name not in self.driver.current_url:
-            self.driver.get(self.base_url)
-            WebDriverWait(self.driver, 120).until(expected_conditions.
-                                                  visibility_of_element_located((By.CLASS_NAME, "company-logo")))
-
-        # Switch to right trading session: CFD or EQUITY
-        self.switch_to(trading=trading)
-
+        # Switch to get also DEMO token
+        self.switch()
         # Get session cookie
         cookies = self.driver.get_cookies()
         if cookies is not None:
@@ -103,22 +100,19 @@ class Trading212:
         console.log("Closing session.")
         self.driver.close()
 
-    def switch_to(self, trading: constants.Trading):
-        if not self.driver.find_elements(By.ID, "platform-loader"):
-            self.driver.find_element(By.CLASS_NAME, "account-menu-info").click()
-            WebDriverWait(self.driver, 10).until(expected_conditions.
-                                                 visibility_of_element_located((By.CLASS_NAME, "account-types")))
-            element_account_types = self.driver.find_element(By.CLASS_NAME, "account-types")
-            if trading == constants.Trading.CFD:
-                element_account_types.find_element(By.CLASS_NAME, "cfd").click()
-                WebDriverWait(self.driver, 60).until(expected_conditions.
-                                                     visibility_of_element_located((By.CLASS_NAME, "cfd-icon")))
-            elif trading == constants.Trading.EQUITY:
-                element_account_types.find_element(By.CLASS_NAME, "equity").click()
-                WebDriverWait(self.driver, 60).until(expected_conditions.
-                                                     visibility_of_element_located((By.CLASS_NAME, "equity-icon")))
-        else:
-            self.switch_to(trading)
+    def switch(self):
+        WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located(
+            (By.CSS_SELECTOR, constants.SELECTOR_MENU_BUTTON)))
+        self.driver.find_element(By.CSS_SELECTOR, constants.SELECTOR_MENU_BUTTON).click()
+
+        self.driver.execute_script("arguments[0].scroll(0, arguments[0].scrollHeight);",
+                                   self.driver.find_element(By.CSS_SELECTOR, constants.SELECTOR_MENU_LIST))
+        self.driver.find_element(By.CSS_SELECTOR, constants.SELECTOR_SWITCH_DEMO).click()
+        WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located(
+            (By.CSS_SELECTOR, constants.SELECTOR_DEMO_EQUITY)))
+        self.driver.find_element(By.CSS_SELECTOR, constants.SELECTOR_DEMO_EQUITY).click()
+        # Wait some seconds to initialize cookies
+        time.sleep(5)
 
     def get_funds(self):
         """Get your funds, free, available."""

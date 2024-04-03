@@ -1,18 +1,11 @@
 import datetime
-import typing
-import requests
 import json
+import typing
 
-from constants import ONE_WEEK
-
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.options import Options
+import requests
 
 
 class CandleStick(object):
-
     """
         The candlestick object is a representaion of the values used in a candlestick
         chart.
@@ -32,9 +25,12 @@ class CandleStick(object):
     timestamp: datetime.datetime
     unknown: int
 
-    def __init__(self,  data: typing.List) -> None:
+    def __init__(self, data: typing.List) -> None:
         self.timestamp, self.high, self.low, self.opening, self.closing, self.unknown = data
 
+    def __repr__(self) -> str:
+        return (f"CandleStick(timestamp={self.timestamp}, high={self.high}, low={self.low},"
+                f" opening={self.opening}, closing={self.closing}, unknown={self.unknown})")
 
 
 class Company:
@@ -50,9 +46,9 @@ class Company:
     def get_pricing_history(
             self,
             interval: str,
+            headers: dict,
             trading_instance: 'Trading212'
     ) -> typing.List[CandleStick]:
-
         ticker_data: str = json.dumps(
             {
                 "candles":
@@ -61,7 +57,7 @@ class Company:
                             "ticker": self.instrument_code,
                             "useAskPrice": True,
                             "period": interval,
-                            "size":500
+                            "size": 500
                         }
                     ]
             }
@@ -69,7 +65,7 @@ class Company:
 
         response = requests.put(
             f"{trading_instance.base_url}{self.charting_url}?ticker={self.instrument_code}&languageCode={self.language_code}",
-            headers=equity.headers,
+            headers=headers,
             data=ticker_data
         )
         return [

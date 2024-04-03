@@ -1,3 +1,6 @@
+### v0.2.7
+    * fix candle stick
+    * adapt api with new T212 app
 ### v0.2.6
     * removed depreacted driver manager
     * fix cfd/equity switch
