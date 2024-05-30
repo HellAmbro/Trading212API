@@ -1,3 +1,5 @@
+### v0.2.8
+    * fix auth
 ### v0.2.7
     * fix candle stick
     * adapt api with new T212 app

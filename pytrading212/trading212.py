@@ -49,22 +49,14 @@ class Trading212:
 
         console.log("Authenticating")
 
-        WebDriverWait(self.driver, 120).until(expected_conditions.visibility_of_element_located((By.NAME, "email")))
+        WebDriverWait(self.driver, 120).until(expected_conditions.visibility_of_element_located((By.XPATH, constants.XPATH_EMAIL)))
 
         # Authenticate
-        self.driver.find_element(By.NAME, "email").send_keys(email)
-        self.driver.find_element(By.NAME, "password").send_keys(password)
+        self.driver.find_element(By.XPATH, constants.XPATH_EMAIL).send_keys(email)
+        self.driver.find_element(By.XPATH, constants.XPATH_PASSWORD).send_keys(password)
 
         # Click login button
-        self.driver.find_element(By.CLASS_NAME, constants.CLASS_LOGIN_BUTTON).click()
-
-        # Close new app button, should be removed later
-        try:
-            WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located(
-                (By.CSS_SELECTOR, constants.SELECTOR_NEW_APP)))
-            self.driver.find_element(By.CSS_SELECTOR, constants.SELECTOR_NEW_APP).click()
-        except NoSuchElementException:
-            pass
+        self.driver.find_element(By.XPATH, constants.XPATH_LOGIN_BUTTON).click()
 
         self.user_agent = self.driver.execute_script("return navigator.userAgent;")
 
